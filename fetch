@@ -1,0 +1,28 @@
+#!/bin/sh
+
+# lil fetch script
+
+
+printf "\t"
+clr -O -s "os:" "#3be29c" 			| tr -d '\n'
+printf "\t"
+clr -O -s "Arch Linux `uname -m`" "#33daf5"
+printf "\t"
+clr -O -s "usr: " "#3be29c" 			| tr -d '\n'
+printf "\t"
+clr -O -s "$USER" "#33daf5" 			| tr -d '\n'
+clr -O -s "@" "#65d61c" 			| tr -d '\n'
+clr -O -s "`cat /etc/hostname`" "#a451ee"
+printf "\t"
+clr -O -s "pkgs:" "#3be29c" 			| tr -d '\n'
+printf "\t"
+clr -O -s "`pacman -Qq | wc -l`" "#33daf5"
+printf "\t"
+clr -O -s "term:" "#3be29c" 			| tr -d '\n'
+printf "\t"
+clr -O -s "$TERMINAL" "#33daf5"
+printf "\t"
+clr -O -s "sh:" "#3be29c" 			| tr -d '\n'
+printf "\t"
+clr -O -s "$SHELL" "#33daf5"
+

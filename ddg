@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# searches the web in terminal
+
+ddg() {
+	[ -z "$1" ] && echo "usage: ddg search term" || \
+		w3m duckduckgo.com/?q="$(echo "$@" | sed 's/ /+/g')"
+}
+
+ddg "$@"

@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# script to generate and set wallpaper for my rice and colorscheme
+
+usage() {
+	echo "usage: $0 /path/to/image.png"
+	exit 1
+}
+
+[ -z "$1" ] && usage
+
+gwall "#222" "#111" 5
+convert -size 1920x1200 tile:/tmp/wall.png /tmp/w.png
+convert "$1" -monochrome +level-colors "#222","#dedede","#dedede" /tmp/k.png
+convert /tmp/w.png -gravity center /tmp/k.png -bordercolor "#dedede" -border 3x3  -composite /tmp/new-wal.png
+xwallpaper --center /tmp/new-wal.png

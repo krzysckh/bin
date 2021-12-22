@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# https://www.etdofresh.com/ffmpeg-your-videos-to-8mb-in-windows-for-discord-use/
+# batch -> sh
+# a lil script that generates a video small enough to be sent on discord
+
+# krzysckh 2021
+# krzysckh.org
+
+usage() {
+	echo "usage: $0 /path/to/video"
+	exit 1
+}
+
+[ -z "$1" ] && usage
+
+output="$1-under8.mp4";
+len=$( (ffprobe -i "$1" -show_entries format=duration -v quiet -of csv="p=0" | sed 's/\..*$//g'))
+
+bitrate=$((64000/len))
+overheadBitrate=100
+audioBitrate=96
+videoBitrate=$((bitrate-audioBitrate-overheadBitrate))
+
+ffmpeg -y -i "$1" -c:v libx264 -b:v "$videoBitrate"k -pass 1 -b:a "$audioBitrate"k -f mp4 NUL
+ffmpeg -i "$1" -c:v libx264 -b:v "$videoBitrate"k -pass 2 -b:a "$audioBitrate"k "$output"

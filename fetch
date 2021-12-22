@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # lil fetch script
-
+# needs https://github.com/krzysckh/clr
 
 printf "\t"
 clr -O -s "os:" "#3be29c" 			| tr -d '\n'

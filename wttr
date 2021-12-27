@@ -1,0 +1,50 @@
+#!/bin/sh
+
+# gets current weather from wttr.in
+# uses $LOCATION to generate image
+# also it makes it monochrome
+
+usage() {
+	echo "usage: $0 [-l location] [-s [image viewer]] [-w]
+	-l sets location
+	-s shows /tmp/wttr.png in [image viewer] || sxiv
+	-w uses 'wal' script to add it to use it as wallpaper
+	-h shows this
+
+	for more help use vi $0"
+	exit 1
+}
+
+[ -z "$LOCATION" ] && LOCATION="krakow"
+
+show=0
+wall=0
+
+while [ "$#" -gt 0 ]
+do
+	case "$1" in
+		-s)
+			show=1
+			[ -z "$2" ] && img_v="sxiv" || img_v="$2" 
+			[ "$img_v" = "sxiv" ] || shift
+			;;
+		-w)
+			wall=1
+			;;
+		-l)
+			[ -z "$2" ] && usage || LOCATION="$2"
+			shift
+			;;
+		-h)
+			usage
+			;;
+	esac
+	shift
+done
+
+
+curl wttr.in/$LOCATION.png?0 2>/dev/null | \
+	convert - -monochrome +level-colors "#222","#dedede" -bordercolor "#222222" -border 15%x15% /tmp/wttr.png
+
+[ "$show" -eq 1 ] && $img_v /tmp/wttr.png &
+[ "$wall" -eq 1 ] && wal /tmp/wttr.png &

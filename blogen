@@ -1,0 +1,135 @@
+#!/bin/sh
+
+# blog generating script - krzysckh 2021
+
+# files fed to this script should be written in upup syntax
+# http://krzysckh.org/upup
+# you should also have these programs installed:
+# 	- indexer (http://krzysckh.org/indexer)
+# 	- upup (http://krzysckh.org/upup)
+
+# warning: this script besides generating a .html file from the provided upup document
+# will create OR write onto "index.html" file
+# this script assumes the layout of the website :
+
+# +-------+----------------------+
+# | side- |                      |
+# | nav   |                      |
+# |       |       main           |
+# |       |                      |
+# |       |                      |
+# +       +----------------------+
+# |       | footer               |
+# +-------+----------------------+
+
+# you should define footer, main and sidenav as classes in style.css
+# files also will get sorted for the index.html site
+
+usage() {
+	echo "usage: $0 [-f YYYY-MM-DD-filename.uu] [-s style.css] [-sc sidenavContent.html] [-fc footerContent.html]" > /dev/stderr
+	echo "more info: vi $0"
+	exit 1
+}
+
+while [ "$#" -gt 0 ]
+do
+	case "$1" in
+		-f)
+			filename="$2"
+			shift
+			;;
+		-s)
+			stylefname="$2"
+			shift
+			;;
+		-sc)
+			sidenavfname="$2"
+			shift
+			;;
+		-fc)
+			footerfname="$2"
+			shift
+			;;
+		-h)
+			usage
+			;;
+		*)
+			usage
+			;;
+	esac
+	shift
+done
+
+[ -z "$filename" ] && echo "-f needed" > /dev/stderr && exit 1
+
+(
+	printf "
+	<!DOCTYPE html>
+	<html>
+		<head>
+			<meta charset=\"utf-8\">
+	"
+
+	[ -z "$stylefname" ] || printf "
+			<link rel=\"stylesheet\" href=\"%s\">
+	" \
+		"$stylefname"
+
+	[ -z "$filename" ] || printf "
+			<title> %s </title>
+	" \
+		"$(echo "$filename" | sed 's/.uu//')"
+
+	printf "
+		</head>
+
+		<body>
+	"
+	[ -z "$sidenavfname" ] || printf "
+			<div class=\"sidenav\">
+	%s
+			</div>
+	" \
+	       "$(cat "$sidenavfname")"
+
+	[ -z "$filename" ] || printf "
+			<div class=\"main\">
+	%s
+			</div>
+	" \
+		"$(upup -b "$filename")"
+
+	[ -z "$footerfname" ] || printf "
+			<div class=\"footer\">
+	%s
+			</div>
+	" \
+		"$(cat "$footerfname")"
+	printf "
+		</body>
+	</html>
+	"
+
+) > $(echo "$filename" | sed 's/.uu/.html/')
+
+indexer \
+	-T html \
+	-l "$stylefname" \
+	-t "blog" \
+	$(ls *.html | sort -n -r) | \
+	grep -v "index.html" \
+	> index.html
+
+(
+	head -n 10 index.html
+	echo '<div class="sidenav">'
+	cat "$sidenavfname"
+	echo '</div> <div class="main">'
+	tail -n $(($(wc -l < index.html)-10)) index.html | head -n -2
+	echo '</div><div class="footer">'
+	cat "$footerfname"
+	echo '</div>'
+) > /tmp/index.html
+
+cp /tmp/index.html index.html
+

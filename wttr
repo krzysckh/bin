@@ -47,4 +47,4 @@ curl wttr.in/$LOCATION.png?0 2>/dev/null | \
 	convert - -monochrome +level-colors "#222","#dedede" -bordercolor "#222222" -border 15%x15% /tmp/wttr.png
 
 [ "$show" -eq 1 ] && $img_v /tmp/wttr.png &
-[ "$wall" -eq 1 ] && wal /tmp/wttr.png &
+[ "$wall" -eq 1 ] && wal /tmp/wttr.png left &

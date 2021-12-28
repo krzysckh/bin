@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# runs dmenu with colors and font set
+#
+# krzysckh 2021
+# krzysckh.org
+
+dmenu -fn "CozetteVector:pixelsize=14" -nb "#222222" -nf "#dedede" -sb "#e4f614" -sf "#222222"
+

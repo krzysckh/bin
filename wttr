@@ -17,7 +17,7 @@ usage() {
 	exit 1
 }
 
-[ -z "$LOCATION" ] && LOCATION="krakow"
+[ -z "$LOCATION" ] && LOCATION="kraków"
 
 show=0
 wall=0

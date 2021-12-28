@@ -1,12 +1,14 @@
 #!/bin/sh
 
 # gets current weather from wttr.in
-# uses $LOCATION to generate image
 # also it makes it monochrome
+#
+# krzysckh 2021
+# krzysckh.org
 
 usage() {
 	echo "usage: $0 [-l location] [-s [image viewer]] [-w]
-	-l sets location
+	-l sets location (LOCATION variable can be used instead)
 	-s shows /tmp/wttr.png in [image viewer] || sxiv
 	-w uses 'wal' script to add it to use it as wallpaper
 	-h shows this

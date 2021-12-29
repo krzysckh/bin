@@ -1,0 +1,7 @@
+#!/bin/sh
+#
+# run at start of .vimrc
+# this script sets vimeverywhere popup to floating mode
+
+[ "$(xtitle)" = "vimeverywhere_pop" ] && bspc node -t floating
+

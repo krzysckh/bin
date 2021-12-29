@@ -1,0 +1,85 @@
+#!/bin/sh
+
+# use vim to input text everywhere
+# krzysckh 2021
+# 
+# dependencies:
+#	- a text editor
+# 	- a terminal emulator
+#	- xdotool
+# 
+# if you're using a tiling window manager you should set a floating mode
+# for all windows with title "vimeverywhere_pop"
+# 
+# ~/.config/i3/config example
+# for_window [title="vimeverywhere_pop"] floating enable
+
+# defaults ↓
+term="urxvt"
+editor="vim"
+runopt="-e"
+
+usage() {
+	echo "
+usage: $0 [-h] [-runopt] [-term terminal-emulator] [-editor text-editor]
+
+-runopt defaults to \"-e\" it changes how the editor is spawned
+ex. urxvt -e vim
+          ~~~
+        runopt
+
+-term specifies a terminal emulator to run (default: urxvt)
+-editor specifies the text editor (default: vim)
+"
+	exit 1
+}
+
+while [ "$#" -gt 0 ]
+do
+	case "$1" in
+		-h)
+			usage
+			;;
+		-runopt)
+			runopt="$2"
+			shift
+			;;
+		-term)
+			term="$2"
+			shift
+			;;
+		-editor)
+			editor="$2"
+			shift
+			;;
+		*)
+			usage
+			;;
+	esac
+	shift
+done
+
+MOUSE_POS="$(
+	xdotool getmouselocation | \
+	awk '{print $1}' | \
+	cut -c 3-
+) $(
+	xdotool getmouselocation | \
+	awk '{print $2}' | \
+	cut -c 3-
+)"
+
+echo > /tmp/vimeverywhere
+
+"$term" -T "vimeverywhere_pop" "$runopt" "$editor" /tmp/vimeverywhere
+
+xdotool mousemove $MOUSE_POS
+xdotool click 1
+
+for i in $(seq $(wc -l /tmp/vimeverywhere | awk '{print $1}'))
+do
+	xdotool type -- "$(sed -n "$i"p /tmp/vimeverywhere)"
+	xdotool key Return
+done
+
+

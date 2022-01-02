@@ -49,6 +49,8 @@ curl "https://www.xe.com/currencyconverter/convert/?Amount=$amount&From=$from&To
 	sed 's/</\n</g' | \
 	grep -v "<" | \
 	tr '\n' ' ' | \
-	awk '{print $1}' | tr -d '\n'
+	awk '{print $1}' | \
+	xargs clr "#a451ee" -O -s | \
+	tr -d '\n'
 
-echo " $to"
+clr -s " $to" "#33daf5" -O

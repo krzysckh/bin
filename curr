@@ -1,0 +1,54 @@
+#!/bin/sh
+#
+# converts between currencies using xe.com
+# remember to use uppercase characters when typing out currency shortcuts
+# 
+# krzysckh 2022
+# krzysckh.org
+
+from="USD"
+to="PLN"
+amount="1"
+
+usage() {
+	cat<<EOF
+usage: $0 [-h] [-f currency] [-t currency] amount
+-f (from) is USD by default
+-t (to) is PLN by default
+amount is 1 by default
+EOF
+	exit 1
+}
+
+while [ "$#" -gt 0 ]
+do
+	case "$1" in
+		-f)
+			from="$(echo $2 | tr a-z A-Z)"
+			shift
+			;;
+		-t)
+			to="$(echo $2 | tr a-z A-Z)"
+			shift
+			;;
+		-h)
+			usage
+			;;
+		*)
+			amount="$1"
+			;;
+	esac
+	shift
+done
+
+curl "https://www.xe.com/currencyconverter/convert/?Amount=$amount&From=$from&To=$to" 2>/dev/null | \
+	sed 's/<\/p>/<\/p>\n/g' | \
+	grep "result__BigRate" | \
+	grep -v "{" | \
+	sed 's/>/>\n/g' | \
+	sed 's/</\n</g' | \
+	grep -v "<" | \
+	tr '\n' ' ' | \
+	awk '{print $1}' | tr -d '\n'
+
+echo " $to"

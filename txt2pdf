@@ -2,6 +2,9 @@
 # uses enscript and ps2pdf to create
 # a pdf from plaintext file
 
-enscript -p - | ps2pdf - -
+[ -z "$1" ] && \
+	enscript -p - | ps2pdf - - \
+	|| \
+	enscript -p - "$1" | ps2pdf - -
 
 # lol

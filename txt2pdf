@@ -1,0 +1,7 @@
+#!/bin/sh
+# uses enscript and ps2pdf to create
+# a pdf from plaintext file
+
+enscript -p - | ps2pdf - -
+
+# lol

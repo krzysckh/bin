@@ -1,6 +1,7 @@
 #!/bin/sh
 # uses enscript and ps2pdf to create
-# a pdf from plaintext file
+# a pdf from plaintext (ascii) file
+# if file is not ascii, use u2ps | ps2pdf - - instead
 
 [ -z "$1" ] && \
 	enscript -p - | ps2pdf - - \

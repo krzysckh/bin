@@ -1,0 +1,16 @@
+#!/bin/sh
+# ????
+# i mean
+# easier than -Tpdf
+# and esthetic
+# and me me likey
+
+(
+	for i in "$@"
+	do
+		MANWIDTH=90 man "$i"
+		echo
+	done
+) | \
+	txt2pdf
+

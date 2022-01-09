@@ -1,0 +1,10 @@
+#!/bin/sh
+# uses u2ps and ps2pdf to create
+# a pdf from plaintext unicode file
+
+[ -z "$1" ] && \
+	u2ps -w - | ps2pdf - - \
+	|| \
+	u2ps -w "$1" "/tmp/tmp_2pdf"; \
+	ps2pdf "/tmp/tmp_2pdf" - ; \
+	rm -f "/tmp/tmp_2pdf"

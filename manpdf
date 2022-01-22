@@ -8,9 +8,9 @@
 (
 	for i in "$@"
 	do
-		MANWIDTH=90 man "$i"
+		MANWIDTH=80 man "$i"
 		echo
 	done
 ) | \
-	txt2pdf
+	unicode2pdf
 

@@ -1,0 +1,11 @@
+#!/bin/sh
+
+usage() {
+	echo "usage: $0 file"
+	exit
+}
+
+[ -z "$1" ] && usage
+
+yes | vim "$1" --not-a-term -c "Topdf" -c "q"
+

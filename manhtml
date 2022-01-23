@@ -1,0 +1,19 @@
+#!/bin/sh
+#
+# well
+
+usage() {
+	cat<<EOF
+usage: $0 man options
+ex. $0 1 turtel
+ex. $0 7 ascii
+EOF
+	exit 1
+}
+
+[ -z "$1" ] && usage
+
+echo "<pre>"
+MANWIDTH=80 man -Tutf8 "$@" | col -b
+echo "</pre>"
+

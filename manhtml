@@ -16,7 +16,7 @@ EOF
 echo "<pre><code>"
 MANWIDTH=80 man -Tutf8 "$@" | \
 	col -b | \
-	sed 's/</\&lt/g' | \
-	sed 's/>/\&gt/g'
+	sed 's/</\&lt;/g' | \
+	sed 's/>/\&gt;/g'
 echo "</code></pre>"
 

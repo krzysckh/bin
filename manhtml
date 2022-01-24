@@ -13,7 +13,10 @@ EOF
 
 [ -z "$1" ] && usage
 
-echo "<pre>"
-MANWIDTH=80 man -Tutf8 "$@" | col -b
-echo "</pre>"
+echo "<pre><code>"
+MANWIDTH=80 man -Tutf8 "$@" | \
+	col -b | \
+	sed 's/</\&lt/g' | \
+	sed 's/>/\&gt/g'
+echo "</code></pre>"
 

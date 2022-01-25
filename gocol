@@ -4,8 +4,8 @@ import sys
 import os
 from ImageGoNord import GoNord
 
-if not sys.argv[1]:
-    print("argv[1] cannot be NULL")
+if len(sys.argv) < 2:
+    print("usage: gocol /path/to/image > image.png")
     exit(1)
 
 colorscheme = {

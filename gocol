@@ -1,0 +1,38 @@
+#!/usr/bin/python3
+
+import sys
+import os
+from ImageGoNord import GoNord
+
+if not sys.argv[1]:
+    print("argv[1] cannot be NULL")
+    exit(1)
+
+colorscheme = {
+    "#222222",
+    "#dedede",
+    "#F04D4D",
+    "#3BE29C",
+    "#E4F614",
+    "#33DAF5",
+    "#A451EE",
+    "#65D61C",
+    "#504E4E"
+}
+
+g_col = GoNord()
+g_col.reset_palette()
+
+for col in colorscheme:
+    g_col.add_color_to_palette(col)
+
+img = g_col.open_image(sys.argv[1])
+
+g_col.convert_image(img, ("/tmp/gocol.png"))
+
+os.system("/bin/cat /tmp/gocol.png")
+
+# just print it to stdout so it can get piped
+# print(f.read("...")) didnt work 'cause
+# python NEEDS to be different
+# thanks

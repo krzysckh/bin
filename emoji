@@ -1,0 +1,21 @@
+#!/bin/sh
+#
+# dmenu emoji selecting script
+# needs emoji list in $HOME/res/
+# you can get it from https://github.com/krzysckh/darkrice
+# 
+# krzysckh 2021
+# krzysckh.org
+
+MSG="skopiowano _EMOJI do schowka\n(-selection clipboard)"
+# MSG="copied _EMOJI to clipboard\n(-selection clipboard)"
+
+emo=$( \
+	dmenu_c -l 10 -fn "CozetteVector:pixelsize=14,Symbola:pixelsize=14"< "$HOME"/res/emoji | \
+	awk '{print $1}'
+)
+
+echo "$emo" | xclip -selection clipboard
+
+notify-send "--- $emo ---" "$(echo $MSG | sed s/_EMOJI/$emo/)"
+

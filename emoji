@@ -17,5 +17,5 @@ emo=$( \
 
 echo "$emo" | xclip -selection clipboard
 
-notify-send "===> $emo <==="$(echo $MSG | sed s/_EMOJI/$emo/)"
+notify-send "===> $emo <===" "$(echo $MSG | sed s/_EMOJI/$emo/)"
 

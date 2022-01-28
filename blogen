@@ -5,8 +5,8 @@
 # files fed to this script should be written in upup syntax
 # http://krzysckh.org/upup
 # you should also have these programs installed:
-# 	- indexer (http://krzysckh.org/indexer)
-# 	- upup (http://krzysckh.org/upup)
+# 	- indexer (http://krzysckh.org/prog/indexer)
+# 	- upup (http://krzysckh.org/prog/upup)
 
 # warning: this script besides generating a .html file from the provided upup document
 # will create OR write onto "index.html" file

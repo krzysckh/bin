@@ -1,0 +1,77 @@
+#!/bin/sh
+# 
+# shows info about currently playing track
+# deps:
+#  - ueberzug (https://github.com/seebye/ueberzug)
+#  - playerctl (https://github.com/altdesktop/playerctl)
+#  - imagemagick (https://imagemagick.org/index.php)
+#  - clr (https://krzysckh.org/prog/clr.html)
+#
+# krzysckh 2021
+# krzysckh.org
+
+
+FIFO="/tmp/spoterm-uz-fifo"
+IMAGE="/tmp/spoterm-uz-img.png"
+ID="fontpreview-ueberzug"
+WIDTH="$(($(tput cols) / 4))"
+HEIGHT=$WIDTH
+SIZE="300x300"
+
+uz() {
+	mkfifo "$FIFO" || exit 1
+	touch "$IMAGE" || exit 1
+	ueberzug layer --parser json < "$FIFO" &
+	exec 3>"$FIFO"
+}
+
+end () {
+	printf '\e[?25h'
+	exec 3>&-
+	rm "$FIFO" > /dev/null 2>&1
+}
+
+img() {
+	convert $(playerctl metadata mpris:artUrl) -resize "$SIZE" "$IMAGE" && \
+		(
+
+			cat > "$FIFO" <<EOF
+			{"action": "add","identifier": "$ID","path": "$IMAGE","x": 1,"y": 1,"scaler": "fit_contain","width": $WIDTH,"height": $HEIGHT}
+EOF
+		) || \
+		(
+			cat > "$FIFO" <<EOFF
+			{
+				"action": "remove",
+				"identifier": "$ID"
+			}
+EOFF
+		)
+}
+
+ts_res() {
+	end
+	WIDTH="$(($(tput cols) / 4))"
+	HEIGHT=$WIDTH
+	spoterm
+}
+
+spoterm() {
+	printf '\033c' # clear screen
+	printf '\e[?25l' # hide cursor
+
+	trap end EXIT QUIT INT TERM
+	trap ts_res WINCH
+	uz
+	img
+	printf '\e[%d;%dH' 2 $((($(tput cols) / 4) + 4))
+	clr -s "$(playerctl metadata xesam:artist)" "#E4F614"
+	printf '\e[%d;%dH' 3 $((($(tput cols) / 4) + 4))
+	clr -s "$(playerctl metadata xesam:title)" "#3BE29C"
+	printf '\e[%d;%dH' 6 $((($(tput cols) / 4) + 4))
+	clr -s "$(playerctl metadata xesam:album)" "#a451ee"
+
+	read
+}
+
+spoterm "$@"

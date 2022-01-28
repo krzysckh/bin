@@ -1,0 +1,14 @@
+#!/bin/sh
+#
+# uses ueberzug to display image
+# image may not fit
+# lol
+
+mkfifo "/tmp/imgdisplay-fifo"
+ueberzug layer --parser json < "/tmp/imgdisplay-fifo" &
+exec 3>"/tmp/imgdisplay-fifo"
+
+cat > "/tmp/imgdisplay-fifo" <<EOF
+{"action": "add","identifier": "imgdisplay","path": "$1","x": 1,"y": 1,"scaler": "fit_contain"}
+EOF
+read

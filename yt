@@ -1,0 +1,14 @@
+#!/bin/sh
+#
+# run mpv on youtuibe lin /w highest quality
+# i use it as a link handler for ytfzf
+
+usage() {
+	echo "usage: $0 link.to/video"
+	exit 1
+}
+
+[ -z "$1" ] && usage
+
+yt-dlp -f bestvideo+bestaudio/best "$1" -o - | mpv -
+

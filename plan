@@ -1,0 +1,41 @@
+#!/bin/sh
+# skrypt pokazujący najnowszy plan lekcji
+# z plan.tk.krakow.pl
+klasa="7"
+# o7.html -> miejsce z planem 1pb
+
+# wymaga:
+#  (testowane na gnu) coreutils
+#  curl
+#  w3m
+#  plan9port (dla htmlfmt)
+
+usr="$(cat /home/krzych/txt/tk_usr)"
+pass="$(cat /home/krzych/txt/tk_pass)"
+
+
+curl --user "$usr":"$pass" http://plan.tk.krakow.pl 2>/dev/null \
+	| htmlfmt \
+	| awk '(NR>2)' \
+	| tr '.' ' ' \
+	| awk '{
+printf $3
+printf $2
+print $1
+}' \
+	| sort \
+	| tail -n 1 \
+	| sed 's/./&\ /4' \
+	| sed 's/./&\ /7' \
+	| awk '{
+print $3
+print $2
+printf $1
+}' \
+	| tr '\n' '.' \
+	| xargs -I '{}' \
+		curl --user "$usr":"$pass" \
+		http://plan.tk.krakow.pl/'{}'/plany/o"$klasa".html 2>/dev/null \
+	> /tmp/plan.html
+
+w3m -dump /tmp/plan.html

@@ -38,4 +38,4 @@ printf $1
 		http://plan.tk.krakow.pl/'{}'/plany/o"$klasa".html 2>/dev/null \
 	> /tmp/plan.html
 
-w3m -dump /tmp/plan.html
+w3m -cols "$(tput cols)" -dump /tmp/plan.html

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+bspc node -t fullscreen
+sleep 1
+tty-clock -sScB

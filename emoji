@@ -17,7 +17,7 @@ emo=$( \
 
 [ -z "$emo" ] && exit 1
 
-echo "$emo" | xclip -selection clipboard
+echo "$emo" | tr -d '\n' | xclip -selection clipboard
 
 notify-send "===> $emo <===" "$(echo $MSG | sed s/_EMOJI/$emo/)"
 

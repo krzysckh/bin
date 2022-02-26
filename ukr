@@ -5,6 +5,11 @@
 # na temat aktualnej sytuacji na Ukrainie
 #
 # hostowane na http://ukr.krzysckh.org
+# wymagania:
+#  curl
+#  coreutils
+#  iconv
+#  xml2tsv (https://aur.archlinux.org/packages/xml2tsv)
 #
 # krzysckh 2022
 # krzysckh.org

@@ -1,0 +1,102 @@
+#!/bin/sh
+#
+# skrypt do wyświetlania w prostym formacie
+# informacji z różnych gazet internetowych
+# na temat aktualnej sytuacji na Ukrainie
+#
+# hostowane na http://ukr.krzysckh.org
+#
+# krzysckh 2022
+# krzysckh.org
+
+cat<<EOF
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title> ukr </title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+EOF
+
+# wiadomości wp
+echo "<div id=\"wp\"> <h1> Wiadomości WP </h1>"
+
+curl https://wiadomosci.wp.pl/tag/wojna%20na%20ukrainie 2>/dev/null \
+	| sed 's/>/>\n/g' \
+	| perl -p -e 's/<p>\n/<p>/' \
+	| grep -A7 "<a title" \
+	| grep -e "<a title" -e "<p>" \
+	> "/tmp/ukr_wp"
+
+opis=0
+wiecej=""
+
+while read i
+do
+	if [ "$opis" = 0 ]; then
+		echo "<h2>"
+		echo "$i" | cut -d '"' -f 2
+		echo "</h2>"
+
+		read bruh
+		# poprzedni kod zwraca 2x ten sam link
+		opis=1
+		wiecej="https://wiadomosci.wp.pl$(echo $i | cut -d '"' -f 4)"
+	else
+		printf '<'
+		echo "$i" | cut -d '<' -f 2
+		echo "</p><p> <a href=\"$wiecej\"> czytaj więcej...</a></p>"
+		opis=0
+	fi
+
+done < /tmp/ukr_wp
+
+echo "</div>"
+# koniec wiadomości wp
+
+# wiadomości gazeta.pl
+echo "<div id=\"gazeta\"><h1> Wiadomości gazeta.pl </h1>"
+
+curl "https://wiadomosci.gazeta.pl/ukraina" 2>/dev/null \
+	| iconv -c -f ISO-8859-2 -t UTF8 \
+	| grep -a -A 5 --color=never "<article" \
+	| tail -n +8 \
+	| grep -av '\-\-' \
+	| grep -av 'header' \
+	| grep -av 'article' \
+	| sed '/^        <section class="body">$/q' \
+	> /tmp/ukr_gaz
+
+opis=0
+wiecej=""
+
+while read i
+do
+	if [ "$opis" = 0 ]; then
+		echo "<h2>"
+		echo "$i" | cut -d '"' -f 4
+		echo "</h2>"
+		read bruh
+		# poprzedni kod zwraca no ten teges
+		opis=1
+		wiecej="$(echo $i | cut -d '"' -f 2)"
+	else
+		echo "<p> $i"
+		echo "<p><a href=\"$wiecej\"> czytaj więcej...</a></p>"
+		opis=0
+	fi
+
+done < /tmp/ukr_gaz
+
+
+echo "</div>"
+# koniec wiadomości gazeta.pl
+
+
+
+cat<<END
+</body>
+</html>
+END

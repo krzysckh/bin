@@ -14,7 +14,7 @@ EOF
 [ -z "$1" ] && usage
 
 echo "<pre><code>"
-MANWIDTH=80 man -Tutf8 "$@" | \
+MANWIDTH=70 man "$@" | \
 	col -b | \
 	sed 's/</\&lt;/g' | \
 	sed 's/>/\&gt;/g'

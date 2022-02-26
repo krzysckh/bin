@@ -1,4 +1,4 @@
-#/bin/sh
+#!/bin/sh
 
 # some scripts use the program 'hostname' for some obscure reason
 # so...

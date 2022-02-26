@@ -94,7 +94,28 @@ done < /tmp/ukr_gaz
 echo "</div>"
 # koniec wiadomości gazeta.pl
 
+# info z twittera @ukraine
+echo "<div id=\"twitter\"><h1> Tweety @ukraine </h1>"
+curl https://nitter.net/Ukraine/rss 2>/dev/null \
+	| xml2tsv \
+	| grep -e "/rss/channel/item/title" -e "/rss/channel/item/description" -e "/rss/channel/item/link" \
+	| sed 's/\\n//g' \
+	> /tmp/ukr_twt
 
+while read i
+do
+	echo "<h2>"
+	echo "$i" | cut -f 2 -d "	"
+	echo "</h2>"
+	read desc
+	echo "$desc" | cut -f 2 -d "	"
+	read wiecej
+	echo "<p> <a href=\"$(echo $wiecej | cut -f 2 -d '	')\"> czytaj więcej... </a> </p>"
+done < /tmp/ukr_twt
+
+echo "</div>"
+
+# koniec twittera
 
 cat<<END
 </body>

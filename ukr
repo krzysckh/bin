@@ -64,7 +64,7 @@ echo "</div>"
 # wiadomości gazeta.pl
 echo "<div id=\"gazeta\"><h1> Wiadomości gazeta.pl </h1>"
 
-curl "https://wiadomosci.gazeta.pl/ukraina" 2>/dev/null \
+curl "https://wiadomosci.gazeta.pl/wojna-na-ukrainie" 2>/dev/null \
 	| iconv -c -f ISO-8859-2 -t UTF8 \
 	| grep -a -A 5 --color=never "<article" \
 	| tail -n +8 \
@@ -115,7 +115,30 @@ do
 	read desc
 	echo "$desc" | cut -f 2 -d "	"
 	read wiecej
-	echo "<p> <a href=\"$(echo $wiecej | cut -f 2 -d '	')\"> czytaj więcej... </a> </p>"
+	echo "<p> <a href=\"$(echo $wiecej | cut -f 2 -d " ")\"> czytaj więcej... </a> </p>"
+done < /tmp/ukr_twt
+
+echo "</div>"
+
+# koniec twittera
+
+# info z twittera @ua_industrial
+echo "<div id=\"twitter_ua_i\"><h1> Tweety @ua_industrial </h1>"
+curl https://nitter.net/ua_industrial/rss 2>/dev/null \
+	| xml2tsv \
+	| grep -e "/rss/channel/item/title" -e "/rss/channel/item/description" -e "/rss/channel/item/link" \
+	| sed 's/\\n//g' \
+	> /tmp/ukr_twt
+
+while read i
+do
+	echo "<h2>"
+	echo "$i" | cut -f 2 -d "	"
+	echo "</h2>"
+	read desc
+	echo "$desc" | cut -f 2 -d "	"
+	read wiecej
+	echo "<p> <a href=\"$(echo $wiecej | cut -f 2 -d " ")\"> czytaj więcej... </a> </p>"
 done < /tmp/ukr_twt
 
 echo "</div>"

@@ -28,7 +28,7 @@ EOF
 # wiadomości wp
 echo "<div id=\"wp\"> <h1> Wiadomości WP </h1>"
 
-curl https://wiadomosci.wp.pl/tag/wojna%20na%20ukrainie 2>/dev/null \
+curl https://wiadomosci.wp.pl/tag/wojna%20w%20ukrainie 2>/dev/null \
 	| sed 's/>/>\n/g' \
 	| perl -p -e 's/<p>\n/<p>/' \
 	| grep -A7 "<a title" \

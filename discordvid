@@ -1,4 +1,5 @@
 #!/bin/sh
+set -xe
 
 # https://www.etdofresh.com/ffmpeg-your-videos-to-8mb-in-windows-for-discord-use/
 # batch -> sh
@@ -7,20 +8,30 @@
 # krzysckh 2021
 # krzysckh.org
 
-usage() {
-	echo "usage: $0 /path/to/video"
-	exit 1
-}
+#usage() {
+	#echo "usage: $0 /path/to/video"
+	#exit 1
+#}
 
-[ -z "$1" ] && usage
+#[ -z "$1" ] && usage
 
-output="$1-under8.mp4";
-len=$( (ffprobe -i "$1" -show_entries format=duration -v quiet -of csv="p=0" | sed 's/\..*$//g'))
+#output="$1-under8.mp4";
+#len=$( (ffprobe -i "$1" -show_entries format=duration -v quiet -of csv="p=0" | sed 's/\..*$//g'))
 
-bitrate=$((64000/len))
-overheadBitrate=100
-audioBitrate=96
-videoBitrate=$((bitrate-audioBitrate-overheadBitrate))
+#bitrate=$((64000/len))
+#overheadBitrate=100
+#audioBitrate=96
+#videoBitrate=$((bitrate-audioBitrate-overheadBitrate))
 
-ffmpeg -y -i "$1" -c:v libx264 -b:v "$videoBitrate"k -pass 1 -b:a "$audioBitrate"k -f mp4 NUL
-ffmpeg -i "$1" -c:v libx264 -b:v "$videoBitrate"k -pass 2 -b:a "$audioBitrate"k "$output"
+#ffmpeg -y -i "$1" -c:v libx264 -b:v "$videoBitrate"k -pass 1 -b:a "$audioBitrate"k -f mp4 NUL
+#ffmpeg -i "$1" -c:v libx264 -b:v "$videoBitrate"k -pass 2 -b:a "$audioBitrate"k "$output"
+
+seconds=$( \
+	ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$1" \
+		| cut -f 1 -d "." \
+	)
+kBps=$((8 * 8192 / $seconds))
+kBps=$(($kBps - 128))
+size="$kBps""k"
+
+ffmpeg -i "$1" -c:v libx264 -b:v "$size" -c:a aac -b:a 128k 8m-"$1"

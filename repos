@@ -3,6 +3,9 @@
 # smaller version of https://github-langs.herokuapp.com/
 # it returns a postscript document so you should pipe it
 # to a document viewer (e.g. zathura)
+#
+# for bigger accounts (e.g. google) downloading information may take some time
+# it will echo progress to /dev/stderr
 # 
 # dependencies:
 #  jq(1)
@@ -11,26 +14,52 @@
 #
 # http://doc.cat-v.org/unix/v8/grap.pdf
 # 
-# tested with plan9port grap(1)
+# tested with plan9port grap(1) and GNU coreutils
 # because default archlinux groff(1) install doesn't come 
 # with grap(1)
 #
 # krzysckh (c) 2022 - under MIT
 # krzysckh.org
 
+GITHUB_API="$(cat /home/krzych/txt/tok.en 2>/dev/null)"
+#          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#              |
+# set github api token for no rate limiting
+
 usage() {
 	cat<<!
 usage: $0 username
 
-more information: vi $0
+you should set the GITHUB_API variable in the source code
+( vi $0 )
 !
 	exit 1
 }
 
-[ -z "$1" ] && usage
+echo > /tmp/_repos_full.json
 
-curl https://api.github.com/users/"$1"/repos \
-	| jq -r '.[] | [.language] | @csv' \
+[ -z "$1" ] && usage
+[ -z "$GITHUB_API" ] && usage
+
+n_pages=$(
+	curl -i -H "Authorization: token $GITHUB_API" "https://api.github.com/users/$1/repos?per_page=4096" 2>/dev/null \
+		| grep "link" \
+		| cut -f 2 -d ',' \
+		| sed 's/page=/\n/g' \
+		| tail -n 1 \
+		| cut -f 1 -d '>'
+)
+
+[ -z "$n_pages" ] && n_pages=1
+
+for i in $(seq $n_pages)
+do
+	curl -H "Authorization: token $GITHUB_API" "https://api.github.com/users/$1/repos?per_page=4096&page=$i" 2>/dev/null \
+		>> /tmp/_repos_full.json
+	echo "downloading page $i/$n_pages" > /dev/stderr
+done
+
+jq -r '.[] | [.language] | @csv' /tmp/_repos_full.json \
 	| tr ',' '\n' \
 	| tr -d '"' \
 	| tr -d " " \

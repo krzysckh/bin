@@ -1,0 +1,61 @@
+#!/bin/sh
+# script that renders github repos by language count
+# smaller version of https://github-langs.herokuapp.com/
+# it returns a postscript document so you should pipe it
+# to a document viewer (e.g. zathura)
+# 
+# dependencies:
+#  jq(1)
+#  grap(1)
+#  groff(1)
+#
+# http://doc.cat-v.org/unix/v8/grap.pdf
+# 
+# tested with plan9port grap(1)
+# because default archlinux groff(1) install doesn't come 
+# with grap(1)
+#
+# krzysckh (c) 2022 - under MIT
+# krzysckh.org
+
+usage() {
+	cat<<!
+usage: $0 username
+
+more information: vi $0
+!
+	exit 1
+}
+
+[ -z "$1" ] && usage
+
+curl https://api.github.com/users/"$1"/repos \
+	| jq -r '.[] | [.language] | @csv' \
+	| tr ',' '\n' \
+	| tr -d '"' \
+	| tr -d " " \
+	| sort \
+	| uniq -c \
+	| sort -nr \
+	| awk '{printf "%s %s\n",$1 ,$2}' \
+	> /tmp/_repos.d
+
+echo '
+.G1
+ticks left off
+cury=0
+barht=.7
+copy "/tmp/_repos.d" thru X
+	line from 0,cury to $1,cury
+	line from $1,cury to $1,cury-barht
+	line from 0,cury-barht to $1,cury-barht
+	"  $2" ljust at 0,cury-barht/2
+	cury = cury - 1
+X
+line from 0,0 to 0,cury+1-barht
+bars=-cury
+frame invis ht bars/3 wid 3
+
+.G2
+' \
+	| groff -p -s -G -Tps

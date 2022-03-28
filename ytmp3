@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# yt -> mp3
+
+usage() {
+	echo "usage: $0 link.to/video"
+	exit 1
+}
+
+[ -z "$1" ] && usage
+
+yt-dlp -x -f bestaudio/best --audio-format mp3 "$1" 
+

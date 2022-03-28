@@ -1,0 +1,45 @@
+#!/bin/sh
+# TL;DR fzf + man
+# 
+# manv creates a fzf menu with man preview
+# and returns manpage's location in the file system
+# 
+# example usage:
+# $ manv | xargs man -t | ps2pdf - page.pdf
+#
+# if the first argument is '9' manv only shows plan9port manuals
+# 
+# also, it's written in a way that it only shows the 1st section
+# man pages
+#
+# tested on arch linux with gnu coreutils and plan9port
+#
+# ... rev | cut -f 1 | rev ... is a really nice hack
+# to get the last field using the cut(1) utility
+#
+# krzysckh 2022
+# krzysckh.org
+
+MANPATHS="$(manpath)"
+[ "$1" = "9" ] && MANPATHS="$PLAN9/man/"
+
+find $(
+	echo "$MANPATHS" \
+		| sed 's/$/\/man1\/\n/g' \
+		| sed 's/:/\/man1\/\n/g'
+) \
+	| grep -e "\.1$" -e "\.1.gz$" \
+	| sed 's/.1$//g' \
+	| sed 's/.1.gz$//g' \
+	| rev \
+	| cut -d '/' -f 1 \
+	| rev \
+	| sort -d \
+	| fzf \
+		--preview "MANWIDTH=$FZF_PREVIEW_COLUMNS \
+			man {} 2>/dev/null \
+			| col -b \
+			| head -n $(tput lines)" \
+		--preview-window follow,70% \
+	| xargs man -w
+

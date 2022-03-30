@@ -1,0 +1,30 @@
+#!/usr/bin/wish
+# XDDD
+
+# tak dobrego pomysłu dawno nie miałem B)))
+
+proc start_apache {} {
+	exec systemctl start httpd
+}
+proc start_mysql {} {
+	exec systemctl start mysqld
+}
+proc stop_apache {} {
+	exec systemctl stop httpd
+}
+proc stop_mysql {} {
+	exec systemctl stop mysqld
+}
+
+proc htdocs {} {
+	exec sudo -u krzych thunar /srv/http
+}
+
+grid [ label .lbl -padx 100 -background "#9a9996" -foreground "#000000" -borderwidth 10 -text "\"xampp\"" ] -padx 100 -pady 10
+
+grid [ button .s_ap -text "Startuj apache" -command "start_apache" -background "#9a9996" -foreground "#000000" ] -pady 20
+grid [ button .s_my -text "Startuj mysql" -command "start_mysql" -background "#9a9996" -foreground "#000000" ] -pady 20
+grid [ button .stop_ap -text "Stopuj apache" -command "stop_apache" -background "#9a9996" -foreground "#000000" ] -pady 20
+grid [ button .stop_my -text "Stopuj mysql" -command "stop_mysql" -background "#9a9996" -foreground "#000000" ] -pady 20
+
+grid [ button .htdocs -text "Przejdź do htdocs" -command "htdocs" -background "#9a9996" -foreground "#000000" ] -pady 20

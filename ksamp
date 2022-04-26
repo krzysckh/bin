@@ -1,6 +1,11 @@
 #!/usr/bin/wish
 # XDDD
-
+#
+# jeżeli nie działa z jakiegoś powodu
+# to trzeba wyeksportować XAUTHORITY i DISPLAY przed odpaleniem jako root
+# np.
+# sudo XAUTHORITY=/home/krzych/.Xauthority DISPLAY=:0 ksamp
+#
 # tak dobrego pomysłu dawno nie miałem B)))
 
 proc start_apache {} {

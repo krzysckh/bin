@@ -8,28 +8,72 @@
 #
 # tak dobrego pomysłu dawno nie miałem B)))
 
+variable apache_r 0
+variable mysql_r 0
+
 proc start_apache {} {
 	exec systemctl start httpd
+	variable apache_r 1
+	show_stat
 }
 proc start_mysql {} {
 	exec systemctl start mysqld
+	variable mysql_r 1
+	show_stat
 }
 proc stop_apache {} {
 	exec systemctl stop httpd
+	variable apache_r 0
+	show_stat
 }
 proc stop_mysql {} {
 	exec systemctl stop mysqld
+	variable mysql_r 0
+	show_stat
 }
 
 proc htdocs {} {
-	exec sudo -u krzych thunar /srv/http
+	exec sudo -u krzych thunar /srv/http &
 }
 
-grid [ label .lbl -padx 100 -background "#9a9996" -foreground "#000000" -borderwidth 10 -text "\"xampp\"" ] -padx 100 -pady 10
+proc show_stat {} {
+	destroy .apache_stat .sql_stat
+	if {$::apache_r == 0} {
+		grid [ label .apache_stat -text "apache" \
+			-foreground "#ffffff" -background "#ff0000" ] -pady 20
+	} else {
+		grid [ label .apache_stat -text "apache" \
+			-foreground "#000000" -background "#44ff44" ] -pady 20
+	}
 
-grid [ button .s_ap -text "Startuj apache" -command "start_apache" -background "#9a9996" -foreground "#000000" ] -pady 20
-grid [ button .s_my -text "Startuj mysql" -command "start_mysql" -background "#9a9996" -foreground "#000000" ] -pady 20
-grid [ button .stop_ap -text "Stopuj apache" -command "stop_apache" -background "#9a9996" -foreground "#000000" ] -pady 20
-grid [ button .stop_my -text "Stopuj mysql" -command "stop_mysql" -background "#9a9996" -foreground "#000000" ] -pady 20
+	if {$::mysql_r == 0} {
+		grid [ label .sql_stat -text "mysql" \
+			-foreground "#ffffff" -background "#ff0000" ] -pady 20
+	} else {
+		grid [ label .sql_stat -text "mysql" \
+			-foreground "#000000" -background "#44ff44" ] -pady 20
+	}
+}
 
-grid [ button .htdocs -text "Przejdź do htdocs" -command "htdocs" -background "#9a9996" -foreground "#000000" ] -pady 20
+grid [ label .lbl -padx 100 -background "#9a9996" \
+	-foreground "#000000" -borderwidth 10 \
+	-text "\"xampp\"" ] -padx 100 -pady 10
+
+grid [ button .s_ap -text "Startuj apache" \
+	-command "start_apache" -background "#9a9996" \
+	-foreground "#000000" ] -pady 20
+grid [ button .s_my -text "Startuj mysql" \
+	-command "start_mysql" -background "#9a9996" \
+	-foreground "#000000" ] -pady 20
+grid [ button .stop_ap -text "Stopuj apache" \
+	-command "stop_apache" -background "#9a9996" \
+	-foreground "#000000" ] -pady 20
+grid [ button .stop_my -text "Stopuj mysql" \
+	-command "stop_mysql" -background "#9a9996" \
+	-foreground "#000000" ] -pady 20
+
+grid [ button .htdocs -text "Przejdź do htdocs" \
+	-command "htdocs" -background "#9a9996" \
+	-foreground "#000000" ] -pady 20
+
+show_stat

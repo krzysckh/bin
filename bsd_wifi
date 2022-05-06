@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# run as root
+
+ifconfig lo0 down
+ifconfig em0 down
+
+ifconfig iwm0 up
+ifconfig iwm0 nwid "NaszaSiec.NET_4537129C" wpakey $(cat /home/kpm/txt/wifi_pass)
+dhclient iwm0
+

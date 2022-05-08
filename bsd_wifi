@@ -1,11 +1,13 @@
 #!/bin/sh
 
 # run as root
+wifi_name="$(cat /home/kpm/txt/home_wifi_name)"
+wifi_pass="$(cat /home/kpm/txt/home_wifi_pass)"
 
 ifconfig lo0 down
 ifconfig em0 down
 
 ifconfig iwm0 up
-ifconfig iwm0 nwid "NaszaSiec.NET_4537129C" wpakey $(cat /home/kpm/txt/wifi_pass)
+ifconfig iwm0 nwid "$wifi_name" wpakey "$wifi_pass"
 dhclient iwm0
 

@@ -10,8 +10,8 @@ klasa="7"
 #  w3m
 #  plan9port (dla htmlfmt)
 
-usr="$(cat /home/krzych/txt/tk_usr)"
-pass="$(cat /home/krzych/txt/tk_pass)"
+usr="$(cat $HOME/txt/tk_usr)"
+pass="$(cat $HOME/txt/tk_pass)"
 
 
 curl --user "$usr":"$pass" http://plan.tk.krakow.pl 2>/dev/null \

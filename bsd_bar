@@ -1,0 +1,37 @@
+#!/bin/sh
+# a bar for my openbsd setup
+
+datetime() {
+	date +"%D, %H:%M" | tr -d '\n'
+}
+
+sound() {
+	echo "$(sndioctl output.level | cut -d = -f 2)" "* 100" \
+		| bc \
+		| tr -d '\n'
+}
+
+bat() {
+	apm -l | tr -d '\n'
+}
+
+bat_time() {
+	apm -m | tr -d '\n'
+	echo " min " | tr -d '\n'
+	echo "(" "$(echo 'scale=4;' $(apm -m) '/60' | bc)" "h" ")" | tr -d '\n'
+}
+
+while :
+do
+	echo "%{l}%{F#000000}%{B#FFFFFF} $(bat)%, $(bat_time)%{F#FFFFFF}" \
+		"%{B#000000}%{r} s: $(sound) %{F#000000}%{B#FFFFFF} " \
+		"$(datetime) %{F#FFFFFF}%{B#000000}"
+
+	sleep 5
+done \
+	| lemonbar-xft \
+		-f "agave Nerd Font:pixelsize=14" \
+		-p \
+		-B "#000000" \
+		-F "#ffffff" \
+		-g 1300x20+33+10

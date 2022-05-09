@@ -1,0 +1,6 @@
+#!/bin/sh
+
+user="kpm"
+
+doas chown "$user" /dev/video0
+mpv av://v4l2:/dev/video0 --untimed --profile=low-latency --vf=hflip

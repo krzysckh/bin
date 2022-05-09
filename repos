@@ -21,8 +21,8 @@
 # krzysckh (c) 2022 - under MIT
 # krzysckh.org
 
-GITHUB_API="$(cat /home/krzych/txt/tok.en 2>/dev/null)"
-#          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+GITHUB_API="$(cat $HOME/txt/tok.en 2>/dev/null)"
+#          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #              |
 # set github api token for no rate limiting
 
@@ -41,8 +41,11 @@ echo > /tmp/_repos_full.json
 [ -z "$1" ] && usage
 [ -z "$GITHUB_API" ] && usage
 
+
 n_pages=$(
-	curl -i -H "Authorization: token $GITHUB_API" "https://api.github.com/users/$1/repos?per_page=4096" 2>/dev/null \
+	curl -i -H "Authorization: token $GITHUB_API" \
+		"https://api.github.com/users/$1/repos?per_page=4096" \
+		2>/dev/null \
 		| grep "link" \
 		| cut -f 2 -d ',' \
 		| sed 's/page=/\n/g' \
@@ -54,7 +57,9 @@ n_pages=$(
 
 for i in $(seq $n_pages)
 do
-	curl -H "Authorization: token $GITHUB_API" "https://api.github.com/users/$1/repos?per_page=4096&page=$i" 2>/dev/null \
+	curl -H "Authorization: token $GITHUB_API" \
+		"https://api.github.com/users/$1/repos?per_page=4096&page=$i" \
+		2>/dev/null \
 		>> /tmp/_repos_full.json
 	echo "downloading page $i/$n_pages" > /dev/stderr
 done
@@ -87,5 +92,12 @@ bars=-cury
 frame invis ht bars/3 wid 3
 
 .G2
-' \
-	| groff -p -s -G -Tps
+' | \
+	case "$(which troff)" in
+		*plan9*)
+			grap | pic | troff | tr2post | psfonts
+			;;
+		*)
+			groff -p -s -G -Tps
+			;;
+	esac

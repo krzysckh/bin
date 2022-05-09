@@ -1,0 +1,48 @@
+#!/bin/sh
+
+# run as root
+
+usage() {
+	echo "$0 home/wifi/eth/off"
+	exit 1
+}
+
+ifconfig lo0 down
+ifconfig em0 down
+ifconfig iwm0 down
+
+pkill -9 dhclient
+
+case "$1" in
+	"home")
+		wifi_name="$(cat /home/kpm/txt/home_wifi_name)"
+		wifi_pass="$(cat /home/kpm/txt/home_wifi_pass)"
+
+		ifconfig iwm0 up
+		ifconfig iwm0 nwid "$wifi_name" wpakey "$wifi_pass"
+		dhclient iwm0
+		;;
+	"wifi")
+		ifconfig iwm0 up
+		ifconfig iwm0 scan
+
+		echo "---"
+		echo "nwid?"
+		read nwid
+		echo "pass?"
+		read pass
+
+		ifconfig iwm0 nwid "$nwid" wpakey "$pass"
+		dhclient iwm0
+		;;
+	"eth")
+		ifconfig em0 up
+		dhclient em0
+		;;
+	"off")
+		;;
+	*)
+		echo "???"
+		usage
+		;;
+esac

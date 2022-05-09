@@ -1,0 +1,27 @@
+#!/bin/sh
+# 
+# records your screen using ffmpeg
+
+usage() {
+	echo "$0 out.mp4"
+	exit 1
+}
+
+_xerr() {
+	echo '$DISPLAY not set'
+	exit 1
+}
+
+[ -z "$1" ] && usage
+[ -z "$DISPLAY" ] && _xerr
+
+ffmpeg \
+	-f x11grab \
+	-y \
+	-framerate 30 \
+	-s "$(xrandr | grep '*' | awk '{print $1}')" \
+	-i "$DISPLAY" \
+	-c:v libx264 \
+	-preset superfast \
+	-crf 18 \
+	"$1"

@@ -18,6 +18,8 @@
 # because default archlinux groff(1) install doesn't come 
 # with grap(1)
 #
+# update: 09 may 2022 - now it can work without groff, just with plan9port
+#
 # krzysckh (c) 2022 - under MIT
 # krzysckh.org
 

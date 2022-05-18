@@ -8,6 +8,8 @@
 #
 # tak dobrego pomysłu dawno nie miałem B)))
 
+font create comic -family "Comic Sans MS" -size 10
+
 variable apache_r 0
 variable mysql_r 0
 
@@ -40,39 +42,49 @@ proc show_stat {} {
 	destroy .apache_stat .sql_stat
 	if {$::apache_r == 0} {
 		grid [ label .apache_stat -text "apache" \
+			-font comic \
 			-foreground "#ffffff" -background "#ff0000" ] -pady 20
 	} else {
 		grid [ label .apache_stat -text "apache" \
+			-font comic \
 			-foreground "#000000" -background "#44ff44" ] -pady 20
 	}
 
 	if {$::mysql_r == 0} {
 		grid [ label .sql_stat -text "mysql" \
+			-font comic \
 			-foreground "#ffffff" -background "#ff0000" ] -pady 20
 	} else {
 		grid [ label .sql_stat -text "mysql" \
+			-font comic \
 			-foreground "#000000" -background "#44ff44" ] -pady 20
 	}
 }
 
 grid [ label .lbl -padx 100 -background "#9a9996" \
+	-font comic \
 	-foreground "#000000" -borderwidth 10 \
 	-text "\"xampp\"" ] -padx 100 -pady 10
 
 grid [ button .s_ap -text "Startuj apache" \
+	-font comic \
 	-command "start_apache" -background "#9a9996" \
 	-foreground "#000000" ] -pady 20
 grid [ button .s_my -text "Startuj mysql" \
+	-font comic \
 	-command "start_mysql" -background "#9a9996" \
 	-foreground "#000000" ] -pady 20
 grid [ button .stop_ap -text "Stopuj apache" \
+	-font comic \
 	-command "stop_apache" -background "#9a9996" \
 	-foreground "#000000" ] -pady 20
 grid [ button .stop_my -text "Stopuj mysql" \
+	-font comic \
 	-command "stop_mysql" -background "#9a9996" \
 	-foreground "#000000" ] -pady 20
 
 grid [ button .htdocs -text "Przejdź do htdocs" \
+	-font comic \
 	-command "htdocs" -background "#9a9996" \
 	-foreground "#000000" ] -pady 20
 

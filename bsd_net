@@ -7,6 +7,8 @@ usage() {
 	exit 1
 }
 
+[ -z "$1" ] && usage
+
 ifconfig lo0 down
 ifconfig em0 down
 ifconfig iwm0 down

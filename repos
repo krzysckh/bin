@@ -9,16 +9,22 @@
 # 
 # dependencies:
 #  jq(1)
-#  grap(1)
-#  groff(1)
+#  grap(1) / plan9port
+#  groff(1) / plan9port
+#  
+# optional:
+#  plan9port - exporting to svg
+#  plan9port + rsvg-convert(1) - exporting to png
+#  
 #
 # http://doc.cat-v.org/unix/v8/grap.pdf
 # 
-# tested with plan9port grap(1) and GNU coreutils
-# because default archlinux groff(1) install doesn't come 
-# with grap(1)
+# tested: 
+#  Arch Linux + GNU coreutils + groff + plan9port
+#  OpenBSD + plan9port
 #
 # update: 09 may 2022 - now it can work without groff, just with plan9port
+# update: 28 may 2022 - now you can export to svg/grap code/png
 #
 # krzysckh (c) 2022 - under MIT
 # krzysckh.org
@@ -29,38 +35,62 @@ GITHUB_API="$(cat $HOME/txt/tok.en 2>/dev/null)"
 # set github api token for no rate limiting
 
 usage() {
-	cat<<!
-usage: $0 username
+	cat >/dev/stderr <<END
+usage: $0 [-t pdf/ps/svg/grap/png] [-h] username
 
-you should set the GITHUB_API variable in the source code
-( vi $0 )
-!
+you should set the GITHUB_API variable in the source code (vi $0)
+END
 	exit 1
 }
 
-echo > /tmp/_repos_full.json
+fmt="ps"
 
-[ -z "$1" ] && usage
+while [ "$#" -gt 0 ]
+do
+	case "$1" in
+		-t)
+			case "$2" in
+				pdf)  fmt="pdf" ;;
+				ps)   fmt="ps"  ;;
+				svg)  fmt="svg" ;;
+				grap) fmt="grap";;
+				png)  fmt="png" ;;
+				*)    usage     ;;
+			esac
+			shift
+			;;
+		-h)
+			usage
+			;;
+		*)
+			username="$1"
+			;;
+	esac
+	shift
+done
+
+[ -z "$username" ] && usage
 [ -z "$GITHUB_API" ] && usage
 
+echo > /tmp/_repos_full.json
 
-n_pages=$(
+n_pages="$(
 	curl -i -H "Authorization: token $GITHUB_API" \
-		"https://api.github.com/users/$1/repos?per_page=4096" \
+		"https://api.github.com/users/$username/repos?per_page=4096" \
 		2>/dev/null \
 		| grep "link" \
 		| cut -f 2 -d ',' \
 		| sed 's/page=/\n/g' \
 		| tail -n 1 \
 		| cut -f 1 -d '>'
-)
+)"
 
 [ -z "$n_pages" ] && n_pages=1
 
 for i in $(seq $n_pages)
 do
 	curl -H "Authorization: token $GITHUB_API" \
-		"https://api.github.com/users/$1/repos?per_page=4096&page=$i" \
+		"https://api.github.com/users/$username/repos?per_page=4096&page=$i" \
 		2>/dev/null \
 		>> /tmp/_repos_full.json
 	echo "downloading page $i/$n_pages" > /dev/stderr
@@ -95,11 +125,49 @@ frame invis ht bars/3 wid 3
 
 .G2
 ' | \
-	case "$(which troff)" in
-		*plan9*)
-			grap | pic | troff | tr2post | psfonts
+	case "$fmt" in
+		ps)
+			case "$(which troff)" in
+				*plan9*)
+					grap \
+						| pic \
+						| troff \
+						| tr2post \
+						| psfonts
+					;;
+				*)
+					groff -p -s -G -Tps
+					;;
+			esac
 			;;
-		*)
-			groff -p -s -G -Tps
+		pdf)
+			case "$(which troff)" in
+				*plan9*)
+					grap \
+						| pic \
+						| troff \
+						| tr2post \
+						| psfonts \
+						| ps2pdf - -
+					;;
+				*)
+					groff -p -s -G -Tpdf
+					;;
+			esac
+			;;
+		svg)
+			which svgpic >/dev/null 2>/dev/null && \
+				grap \
+				| svgpic \
+				| grep -v '^\.' # remove redundant macros
+			;;
+		grap)
+			cat
+			;;
+		png)
+			grap \
+				| svgpic \
+				| rsvg-convert -w 1000 -b "#ffffff"
 			;;
 	esac
+

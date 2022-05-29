@@ -10,32 +10,25 @@ klasa="7"
 #  w3m
 #  plan9port (dla htmlfmt)
 
-usr="$(cat $HOME/txt/tk_usr)"
-pass="$(cat $HOME/txt/tk_pass)"
+usr="$(cat "$HOME"/txt/tk_usr)"
+pass="$(cat "$HOME"/txt/tk_pass)"
 
 
 curl --user "$usr":"$pass" http://plan.tk.krakow.pl 2>/dev/null \
 	| htmlfmt \
 	| awk '(NR>2)' \
 	| tr '.' ' ' \
-	| awk '{
-printf $3
-printf $2
-print $1
-}' \
-	| sort \
+	| awk '{ printf "%02d%02d%02d\n", $3, $2, $1 }' \
+	| sort -n \
 	| tail -n 1 \
 	| sed 's/./&\ /4' \
 	| sed 's/./&\ /7' \
-	| awk '{
-print $3
-print $2
-printf $1
-}' \
-	| tr '\n' '.' \
+	| awk '{ printf "%02d.%02d.%02d", $3, $2, $1 }' \
 	| xargs -I '{}' \
-		curl --user "$usr":"$pass" \
-		http://plan.tk.krakow.pl/'{}'/plany/o"$klasa".html 2>/dev/null \
-	> /tmp/plan.html
+		w3m -cols "$(tput cols)" -dump \
+		http://"$usr":"$pass"@plan.tk.krakow.pl/'{}'/plany/o"$klasa".html
 
-w3m -cols "$(tput cols)" -dump /tmp/plan.html
+#curl --user "$usr":"$pass" \
+#http://plan.tk.krakow.pl/'{}'/plany/o"$klasa".html 2>/dev/null \
+#> /tmp/plan.html
+

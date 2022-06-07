@@ -1,0 +1,168 @@
+#!/bin/sh
+echo No.
+exit 1
+
+REAL_LIST="/tmp/_tmp_uzuke_slist"
+
+STATUS="stopped"
+PLAYER="mpv - >/dev/null 2>/dev/null"
+PLAYER_PID=""
+
+LINES="$(tput lines)"
+COLUMNS="$(tput cols)"
+
+MENU_OPT=""
+MENU_OPT_N=
+
+CUR_POS=0
+
+_prep_term() {
+	printf '\e[?1049h'	# remember user screen
+	printf '\e[?25l'	# hide cursor
+	stty -icanon -echo
+}
+
+_quit() {
+	printf '\e[?1049l'	# load user screen
+	printf '\e[?25h'	# show cursor
+	exit "$1"
+}
+
+_create_plist() {
+	true
+}
+
+_prep_plist() {
+	printf '' > "$REAL_LIST"	# clear file
+	while read plistopt
+	do
+		case "$plistopt" in
+			*"://"*)
+				echo "$plistopt"
+				;;
+			"/"*)
+				[ -d "$plistopt" ] && {
+					find "$plistopt" \
+					| while read diropt
+					do
+						echo "$diropt"
+					done
+				} ||
+					echo "$plistopt"
+				;;
+		esac
+	done < "$1" >> "$REAL_LIST"
+
+	MENU_OPT_N="$(wc -l $REAL_LIST | awk '{print $1}')"
+}
+
+_menu() {
+	case "$1" in
+		up)
+			[ "$CUR_POS" -eq 0 ] && return
+			CUR_POS=$(($CUR_POS-1))
+			;;
+		down)
+			[ "$CUR_POS" -eq $((MENU_OPT_N-1)) ] && return
+			CUR_POS=$(($CUR_POS+1))
+			;;
+	esac
+
+	_redraw
+}
+
+_statusline() {
+	[ -z "$1" ] && return
+
+	printf '\e[%s;0H' "$((LINES-2))"
+	printf '\e[41m'		# red background
+	printf '%*s\r%s ' "$COLUMNS" "" "$1" #"$((LINES-2))"
+	printf '\e[0m'
+}
+
+_redraw() {
+	#printf '\e[2J\e[H' # clear
+
+	i=0
+	while read opt
+	do
+		printf '\e[%s;0H' "$((i+1))"
+
+		if [ "$i" -eq "$CUR_POS" ]; then
+			printf '\e[7m%s\e[0m' "$opt"
+		else
+			printf '%s' "$opt"
+		fi
+		
+		i=$(($i+1))
+	done < "$REAL_LIST"
+
+	_statusline "$(_get_cur_opt)"
+}
+
+_get_cur_opt() {
+	i=0
+
+	while read opt
+	do
+		if [ "$i" -eq "$CUR_POS" ]; then
+			printf '%s' "$opt"
+			return
+		fi
+
+		i=$((i+1))
+	done < "$REAL_LIST"
+}
+
+_handle_play() {
+	[ -z "$1" ] && return
+
+	case "$1" in
+		"search://"*)
+			echo "not implemented"
+			_quit 1
+			;;
+		*)
+			$PLAYER < "$1"
+			PLAYER_PID="$!"
+			;;
+	esac
+
+	[ "$STATUS" = "stopped" ] && STATUS="playing"
+}
+
+main() {
+	_prep_term
+
+	_prep_plist "$1"
+
+	_redraw
+
+	while key=$(dd ibs=1 count=1 2>/dev/null)
+	do
+		case "$key" in
+			j)
+				_menu down
+				;;
+			k)
+				_menu up
+				;;
+			l)
+				_handle_play "$(_get_cur_opt)"
+				;;
+			q)
+				_quit 0
+				;;
+			' ')
+				if [ "$STATUS" = "playing" ]; then
+					pkill -9 "$PLAYER_PID"
+				else
+					_handle_play "$(_get_cur_opt)"
+					# will set status
+				fi
+				;;
+		esac
+	done
+}
+
+main "$@"

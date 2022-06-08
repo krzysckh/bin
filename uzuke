@@ -63,7 +63,7 @@ _create_plist() {
 				;;
 			"/"*)
 				[ -d "$plistopt" ] && {
-					find "$plistopt" \
+					find "$plistopt" -type f \
 					| while read diropt
 					do
 						echo "$diropt"
@@ -116,6 +116,11 @@ _redraw() {
 	while read opt
 	do
 		printf '\033[%s;0H' "$((i+1))"
+		opt="$(
+			echo $opt \
+				| sed 's!'$HOME'!~!g' \
+				| cut -b -$((COLUMNS-2))
+			)"
 
 		if [ "$i" -eq "$CUR_POS" ]; then
 			printf '\033[7m%s\033[0m' "$opt"

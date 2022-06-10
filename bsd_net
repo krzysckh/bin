@@ -9,9 +9,6 @@ usage() {
 
 [ -z "$1" ] && usage
 
-#ifconfig lo0 down
-#ifconfig em0 down
-#ifconfig iwm0 down
 ifconfig lo0 up
 ifconfig em0 up
 ifconfig iwm0 up
@@ -23,12 +20,10 @@ case "$1" in
 		wifi_name="$(cat /home/kpm/txt/home_wifi_name)"
 		wifi_pass="$(cat /home/kpm/txt/home_wifi_pass)"
 
-		#ifconfig iwm0 up
 		ifconfig iwm0 nwid "$wifi_name" wpakey "$wifi_pass"
 		dhclient iwm0
 		;;
 	"wifi")
-		#ifconfig iwm0 up
 		ifconfig iwm0 scan
 
 		echo "---"
@@ -45,6 +40,9 @@ case "$1" in
 		dhclient em0
 		;;
 	"off")
+		ifconfig lo0 down
+		ifconfig em0 down
+		ifconfig iwm0 down
 		;;
 	*)
 		echo "???"

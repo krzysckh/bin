@@ -5,6 +5,11 @@
 #  - socat(1)
 #  - curl
 
+# it's absolutely unfinished. do not use it.
+
+echo "No."
+exit 1
+
 REAL_LIST="/tmp/_tmp_uzuke_slist"
 
 STATUS="stopped"
@@ -105,9 +110,9 @@ _statusline() {
 	[ -z "$1" ] && return
 	show="$(echo $1 | cut -b -$((COLUMNS-1)))"
 
-	printf '\033[%s;0H' "$((LINES-2))"
+	printf '\033[%s;0H' "$((LINES-1))"
 	printf '\033[41m'		# red background
-	printf '%*s\r%s ' "$COLUMNS" "" "$show" #"$((LINES-2))"
+	printf '%*s\r%s ' "$COLUMNS" "" "$show"
 	printf '\033[0m'
 }
 

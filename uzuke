@@ -1,4 +1,18 @@
 #!/bin/sh
+# "music player", wrapper for mpv
+# usage:
+#   $ printf '%s\n%s' "/folder/with/music/" "/another/" | uzuke create > plist
+#   $ uzuke plist
+# j - down,
+# k - up,
+# l - play selected,
+# spc - play/pause,
+# g - go to top
+# G - go to bottom
+# - - vol down
+# = - vol up
+# c - redraw
+# q - quit
 #
 # dependencies:
 #  - mpv
@@ -7,12 +21,13 @@
 
 # it's absolutely unfinished. do not use it.
 
-echo "No."
+echo "No." >/dev/stderr
 #exit 1
 
 REAL_LIST="/tmp/_tmp_uzuke_slist"
 
 STATUS="stopped"
+SCROLL=0
 
 # written for mpv
 # if your music player of choice works with unix sockets
@@ -25,7 +40,6 @@ PLAYER_PID=""
 LINES="$(tput lines)"
 COLUMNS="$(tput cols)"
 
-MENU_OPT=""
 MENU_OPT_N=
 
 CUR_POS=0
@@ -60,7 +74,7 @@ _quit() {
 
 _create_plist() {
 	printf '' > "$REAL_LIST"	# clear file
-	while read plistopt
+	while read -r plistopt
 	do
 		case "$plistopt" in
 			*"://"*)
@@ -69,7 +83,7 @@ _create_plist() {
 			"/"*)
 				[ -d "$plistopt" ] && {
 					find "$plistopt" -type f \
-					| while read diropt
+					| while read -r diropt
 					do
 						echo "$diropt"
 					done
@@ -77,7 +91,7 @@ _create_plist() {
 					echo "$plistopt"
 				;;
 		esac
-	done >> "$REAL_LIST"
+	done | sort >> "$REAL_LIST"
 
 	MENU_OPT_N="$(wc -l $REAL_LIST | awk '{print $1}')"
 
@@ -95,11 +109,11 @@ _menu() {
 	case "$1" in
 		up)
 			[ "$CUR_POS" -eq 0 ] && return
-			CUR_POS=$(($CUR_POS-1))
+			CUR_POS=$((CUR_POS-1))
 			;;
 		down)
 			[ "$CUR_POS" -eq $((MENU_OPT_N-1)) ] && return
-			CUR_POS=$(($CUR_POS+1))
+			CUR_POS=$((CUR_POS+1))
 			;;
 	esac
 
@@ -108,7 +122,7 @@ _menu() {
 
 _statusline() {
 	[ -z "$1" ] && return
-	show="$(echo $1 | cut -b -$((COLUMNS-1)))"
+	show="$(echo "$1" | cut -b -$((COLUMNS-1)))"
 
 	printf '\033[%s;0H' "$((LINES-1))"
 	printf '\033[41m'		# red background
@@ -117,23 +131,41 @@ _statusline() {
 }
 
 _redraw() {
+	[ "$CUR_POS" -gt "$((LINES-3))" ] && SCROLL="$((CUR_POS-(LINES-3)))"
+	ORIG_SCROLL="$SCROLL"
 	i=0
-	while read opt
-	do
-		printf '\033[%s;0H' "$((i+1))"
-		opt="$(
-			echo $opt \
-				| sed 's!'$HOME'!~!g' \
-				| cut -b -$((COLUMNS-2))
-			)"
 
-		if [ "$i" -eq "$CUR_POS" ]; then
-			printf '\033[7m%s\033[0m' "$opt"
+	while read -r opt
+	do
+		if [ "$SCROLL" -gt "0" ]; then
+			SCROLL="$((SCROLL-1))"
+			#i=$(($i+1))
+			continue
 		else
-			printf '%s' "$opt"
+			printf '\033[%s;0H' "$((i+1))"
+			opt="$(
+				echo "$opt" \
+					| sed 's!'"$HOME"'!~!g' \
+					| cut -b -$((COLUMNS-2))
+				)"
+
+			case "$i" in
+				"$CUR_POS")
+					printf '\033[7m%s\033[0m' "$opt"
+					;;
+				"$((CUR_POS-ORIG_SCROLL))")
+					printf '\033[7m%s\033[0m' "$opt"
+					;;
+				*)
+					printf '%s' "$opt"
+					;;
+			esac
+			printf '%*s\r' "$((COLUMNS-${#opt}))" ""
+			
+			i=$((i+1))
+
+			[ "$i" -gt "$((LINES-3+SCROLL))" ] && break
 		fi
-		
-		i=$(($i+1))
 	done < "$REAL_LIST"
 
 	_statusline "$(_get_cur_opt)"
@@ -142,7 +174,7 @@ _redraw() {
 _get_cur_opt() {
 	i=0
 
-	while read opt
+	while read -r opt
 	do
 		if [ "$i" -eq "$CUR_POS" ]; then
 			printf '%s' "$opt"
@@ -195,6 +227,14 @@ main() {
 		case "$key" in
 			c)
 				printf '\033[2J\033[H' # clear
+				_redraw
+				;;
+			g)
+				CUR_POS=0
+				_redraw
+				;;
+			G)
+				CUR_POS="$((MENU_OPT_N-1))"
 				_redraw
 				;;
 			j)

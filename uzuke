@@ -8,7 +8,7 @@
 # it's absolutely unfinished. do not use it.
 
 echo "No."
-exit 1
+#exit 1
 
 REAL_LIST="/tmp/_tmp_uzuke_slist"
 

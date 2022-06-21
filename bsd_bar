@@ -1,5 +1,10 @@
 #!/bin/sh
 # a bar for my openbsd setup
+# run:
+#   $ bsd_bar cwm 
+#  for cwm
+#   $ bsd_bar dwm
+#  for dwm
 
 datetime() {
 	date +"%D, %H:%M" | tr -d '\n'
@@ -21,17 +26,30 @@ bat_time() {
 	echo "(" "$(echo 'scale=4;' $(apm -m) '/60' | bc)" "h" ")" | tr -d '\n'
 }
 
-while :
-do
-	echo "%{l}%{F#000000}%{B#FFFFFF} $(bat)%, $(bat_time)%{F#FFFFFF}" \
-		"%{B#000000}%{r} s: $(sound) %{F#000000}%{B#FFFFFF} " \
-		"$(datetime) %{F#FFFFFF}%{B#000000}"
+case "$1" in
+	cwm)
+		while :
+		do
+			echo "%{l}%{F#000000}%{B#FFFFFF} $(bat)%, " \
+				"$(bat_time)%{F#FFFFFF}%{B#000000}%{r} s: " \
+				"$(sound) %{F#000000}%{B#FFFFFF} " \
+				"$(datetime) %{F#FFFFFF}%{B#000000}"
 
-	sleep 5
-done \
-	| lemonbar-xft \
-		-f "agave Nerd Font:pixelsize=14" \
-		-p \
-		-B "#000000" \
-		-F "#ffffff" \
-		-g 1300x20+33+10
+			sleep 5
+		done \
+			| lemonbar-xft \
+				-f "agave Nerd Font:pixelsize=14" \
+				-p \
+				-B "#000000" \
+				-F "#ffffff" \
+				-g 1300x20+33+10
+		;;
+	dwm)
+		while :
+		do
+			xsetroot -name \
+			"$(bat) ($(bat_time), snd: $(sound), $(datetime)"
+			sleep 5
+		done
+		;;
+esac

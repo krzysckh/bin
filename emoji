@@ -7,17 +7,22 @@
 # krzysckh 2021
 # krzysckh.org
 
-MSG="skopiowano _EMOJI do schowka\n(-selection clipboard)"
-# MSG="copied _EMOJI to clipboard\n(-selection clipboard)"
-
-emo=$( \
-	dmenu_c -l 10 -fn "CozetteVector:pixelsize=14,Symbola:pixelsize=14"< "$HOME"/res/emoji | \
-	awk '{print $1}'
-)
-
-[ -z "$emo" ] && exit 1
-
-echo "$emo" | tr -d '\n' | xclip -selection clipboard
-
-notify-send "===> $emo <===" "$(echo $MSG | sed s/_EMOJI/$emo/)"
-
+case "$(uname)" in
+	*OpenBSD*)
+		dmenu \
+			-fn 'agave Nerd Font:size=8' \
+			-nb '#000000' \
+			-nf '#ffffff' \
+			-sb '#ffffff' \
+			-sf '#000000' \
+			-l 10
+		;;
+	*)
+		dmenu_c \
+			-l 10 \
+			-fn 'CozetteVector:pixelsize=14,Symbola:pixelsize=14'
+		;;
+esac < "$HOME"/res/emoji \
+	| awk '{ print $1 }' \
+	| tr -d '\n' \
+	| xclip -selection clipboard

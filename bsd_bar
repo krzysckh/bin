@@ -47,9 +47,9 @@ case "$1" in
 	dwm)
 		while :
 		do
-			xsetroot -name \
-			"$(bat) ($(bat_time), snd: $(sound), $(datetime)"
-			sleep 5
+			info="$(bat)% -> $(bat_time), snd: $(sound), d: $(datetime)"
+			xsetroot -name "$info"
+			sleep 2
 		done
 		;;
 esac

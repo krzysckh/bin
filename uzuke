@@ -1,16 +1,17 @@
 #!/bin/sh
+# 
 # "music player", wrapper for mpv
 # usage:
 #   $ printf '%s\n%s' "/folder/with/music/" "/another/" | uzuke create > plist
 #   $ uzuke plist
-# j - down,
-# k - up,
+# [count] j - down,
+# [count] k - up,
 # l - play selected,
 # spc - play/pause,
 # g - go to top
 # G - go to bottom
-# - - vol down
-# = - vol up
+# [count] - - vol down
+# [count] = - vol up
 # c - redraw
 # q - quit
 #
@@ -18,6 +19,11 @@
 #  - mpv
 #  - socat(1)
 #  - curl
+#
+# if it screams at you with socat - sorry, not sorry
+#
+# krzysckh 2022 (c) - under MIT license
+# krzysckh.org
 
 # it's absolutely unfinished. do not use it.
 
@@ -43,6 +49,8 @@ COLUMNS="$(tput cols)"
 MENU_OPT_N=
 
 CUR_POS=0
+
+REP_KEY=
 
 _handle_socket() {
 	case "$1" in
@@ -117,7 +125,8 @@ _menu() {
 			;;
 	esac
 
-	_redraw
+	#[ "$REP_KEY" -gt 1 ] || _redraw
+	# don't redraw. i'll take care of that
 }
 
 _statusline() {
@@ -212,6 +221,18 @@ _handle_play() {
 	STATUS="playing"
 }
 
+_handle_repeat() {
+	if [ "$REP_KEY" -ne 0 ]; then
+		for i in $(seq $REP_KEY); do
+			#REP_KEY=$((REP_KEY-1))
+			$@
+		done
+		REP_KEY=
+	else
+		$@
+	fi
+}
+
 main() {
 	[ -z "$1" ] && _quit 1
 	[ "$1" = "create" ] && _create_plist
@@ -230,23 +251,33 @@ main() {
 				LINES="$(tput lines)"
 				COLUMNS="$(tput cols)"
 				_redraw
+
+				REP_KEY=
 				;;
 			g)
 				CUR_POS=0
 				_redraw
+
+				REP_KEY=
 				;;
 			G)
 				CUR_POS="$((MENU_OPT_N-1))"
 				_redraw
+
+				REP_KEY=
 				;;
 			j)
-				_menu down
+				_handle_repeat _menu down
+				_redraw
 				;;
 			k)
-				_menu up
+				_handle_repeat _menu up
+				_redraw
 				;;
 			l)
 				_handle_play "$(_get_cur_opt)"
+
+				REP_KEY=
 				;;
 			q)
 				_quit 0
@@ -255,10 +286,16 @@ main() {
 				_handle_socket playpause
 				;;
 			'-')
-				_handle_socket voldown
+				_handle_repeat _handle_socket voldown
+				_statusline "$(_get_cur_opt)"
 				;;
 			'=')
-				_handle_socket volup
+				_handle_repeat _handle_socket volup
+				_statusline "$(_get_cur_opt)"
+				;;
+			[0-9])
+				REP_KEY="$REP_KEY""$key"
+				_statusline $REP_KEY
 				;;
 		esac
 	done

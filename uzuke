@@ -222,14 +222,14 @@ _handle_play() {
 }
 
 _handle_repeat() {
-	if [ "$REP_KEY" -ne 0 ]; then
+	if [ ! -z "$REP_KEY" ]; then
 		for i in $(seq $REP_KEY); do
 			#REP_KEY=$((REP_KEY-1))
-			$@
+			"$@"
 		done
 		REP_KEY=
 	else
-		$@
+		"$@"
 	fi
 }
 

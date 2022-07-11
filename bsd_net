@@ -26,11 +26,13 @@ case "$1" in
 	"wifi")
 		ifconfig iwm0 scan
 
-		echo "---"
-		echo "nwid?"
+		printf "\n - - -\n"
+		printf "[nwid]: "
 		read nwid
-		echo "pass?"
+		printf "[pass]: "
+		stty -echo
 		read pass
+		stty echo
 
 		ifconfig iwm0 nwid "$nwid" wpakey "$pass"
 		dhclient iwm0

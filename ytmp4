@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# yt -> mp4
+
+usage() {
+	echo "usage: $0 link.to/video"
+	exit 1
+}
+
+[ -z "$1" ] && usage
+
+yt-dlp -f bestvideo+bestaudio/best "$@"
+

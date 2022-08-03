@@ -21,7 +21,9 @@ ffmpeg \
 	-framerate 30 \
 	-s "$(xrandr | grep '*' | awk '{print $1}')" \
 	-i "$DISPLAY" \
+	-pix_fmt yuv420p \
 	-c:v libx264 \
 	-preset superfast \
 	-crf 18 \
 	"$1"
+

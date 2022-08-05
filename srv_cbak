@@ -1,0 +1,23 @@
+#!/bin/sh
+
+if [ -e "$HOME/Documents" ]; then
+	bakf="$HOME/Documents/srv_bak"
+else
+	bakf="$HOME/documents/srv_bak"
+fi
+
+sshpass \
+	-P 'Enter passphrase for key' \
+	-p "$(cat $HOME/txt/pas_krzorg)" \
+	ssh -i "$HOME/.ssh/krzysckh.org" \
+	root@bije.zone \
+	"sh crbak.sh"
+
+fname="`date +%s`_bak.tgz"
+
+sshpass \
+	-P 'Enter passphrase for key' \
+	-p $(cat $HOME/txt/pas_krzorg) \
+	scp -i "$HOME/.ssh/krzysckh.org" \
+	scp://root@krzysckh.org//root/bak.tgz \
+	"$bakf/$fname"

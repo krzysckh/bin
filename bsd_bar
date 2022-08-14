@@ -7,7 +7,7 @@
 #  for dwm
 
 datetime() {
-	date +"%D, %H:%M" | tr -d '\n'
+	date +"%d/%m/%y, %H:%M" | tr -d '\n'
 }
 
 sound() {

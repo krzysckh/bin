@@ -14,7 +14,7 @@ usr="$(cat "$HOME"/txt/tk_usr)"
 pass="$(cat "$HOME"/txt/tk_pass)"
 
 
-curl --user "$usr":"$pass" http://plan.tk.krakow.pl 2>/dev/null \
+curl --user "$usr":"$pass" https://plan.tk.krakow.pl 2>/dev/null \
 	| htmlfmt \
 	| awk '(NR>2)' \
 	| tr '.' ' ' \

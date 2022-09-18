@@ -1,0 +1,40 @@
+#!/bin/sh
+#
+# connecting displays on my laptop
+#
+# krzysckh 2022
+# krzysckh.org
+
+die() {
+  echo $@
+  exit 1
+}
+
+[ `uname` -ne 'OpenBSD' ] && die 'bogger off'
+
+_wallpaper() {
+  mon=`xrandr --listactivemonitors | awk 'NR > 1 { print $(NF) }'`
+  for i in $mon; do
+    xwallpaper --output "$i" --zoom $HOME/documents/img/wal.jpg
+  done
+}
+
+case `printf 'single\ndual\ncustom' | dmenu_c` in
+  single)
+    xrandr --output eDP-1 --primary --mode 1366x768 --pos 0x0 --rotate normal \
+      --output DP-1 --off --output HDMI-1 --off --output DP-2 --off --output \
+      HDMI-2 --off
+    _wallpaper
+    ;;
+  dual)
+    xrandr --output eDP-1 --primary --mode 1366x768 --pos 0x661 \
+      --rotate normal --output DP-1 --off --output HDMI-1 --off --output DP-2 \
+      --off --output HDMI-2 --mode 1280x1024 --pos 1366x0 --rotate normal
+    _wallpaper
+    ;;
+  custom)
+    arandr
+    _wallpaper
+    ;;
+esac
+

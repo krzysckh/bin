@@ -1,0 +1,6 @@
+#!/bin/sh
+
+v="IC-222.3739.54"
+
+ulimit -Sd `ulimit -Hd`
+./.local/share/idea/idea-$v/bin/idea.sh 

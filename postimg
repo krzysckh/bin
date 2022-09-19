@@ -37,7 +37,7 @@ echo "napewno? $fname ($date = `perl -e "print scalar localtime $date"`)"
 printf '[y/n] '
 read yn
 
-if [ "$yn" -eq 'y' ]; then
+if [ "$yn" = 'y' ]; then
   convert "$fname" -quality 100 /tmp/"$date.jpg" || die "problem magick"
 	sshpass \
     -P 'Enter passphrase for key' \

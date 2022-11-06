@@ -15,7 +15,7 @@ sound() {
 
 while :
 do
-	info="snd: $(sound), d: $(datetime)"
+	info=" snd: $(sound), d: $(datetime)"
 	xsetroot -name "$info"
 	sleep 2
 done

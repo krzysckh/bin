@@ -1,58 +1,21 @@
 #!/bin/sh
 
-# lemonbar startup script
+# dwm bar script
 #
-# krzysckh 2021
+# krzysckh 2021, 2022
 # krzysckh.org
-#
-# stopped using it in favor of bspwmbar
 
-FOCUSED_DESKTOP="%%{F#dedede}%%{B#222222} ● "
-NORMAL_DESKTOP="%%{F#504e4e}%%{B#222222} ○ "
-
-ALL_DESK=$(xprop -root _NET_NUMBER_OF_DESKTOPS | awk '{print $3}')
-
-desktop() {
-	DESK=$(xprop -root _NET_CURRENT_DESKTOP | awk '{print $3}')
-	for i in $(seq $DESK); do
-		printf "$NORMAL_DESKTOP"
-	done
-
-	printf "$FOCUSED_DESKTOP"
-
-	for i in $(seq $((DESK + 1)) $ALL_DESK); do
-		printf "$NORMAL_DESKTOP"
-	done
+datetime() {
+	date +"%d/%m/%y, %H:%M" | tr -d '\n'
 }
 
-volume() {
+sound() {
 	amixer get Master | tail -n 1 | awk '{print $5}' | tr -d '%'
 }
 
-title() {
-	xtitle
-}
-
-lang() {
-	setxkbmap -query | grep layout | awk '{print $2}'
-}
-
-timedate() {
-	date +"%a, %d %B %Y %H:%M"
-}
-
-while :; do
-	buff="%{l}$(desktop)  %{B#e4f614}%{F#222222} $(volume) %{B#222222}"
-	buff="$buff %{c}%{B#222222}%{F#dedede}$(title)%{r}%{B#222222}%{F#dedede}$(lang) %{B#65d61c}%{F#222222} $(timedate) "
-	buff="$buff%{B#222222}"
-	echo "$buff"
-
-	#last_t=$(title)
-	#last_d=$(xprop -root _NET_CURRENT_DESKTOP | awk '{print $3}')
-
-	
-	#while [ "$last_t" = "$(title)" ] && [ "$last_d" = "$(xprop -root _NET_CURRENT_DESKTOP | awk '{print $3}')" ]; do
-		#printf ""
-	#done
-	sleep 1
+while :
+do
+	info="snd: $(sound), d: $(datetime)"
+	xsetroot -name "$info"
+	sleep 2
 done

@@ -12,8 +12,8 @@ case `uname` in
         -sb '#f8f8f2' -sf '#282a36'
     ;;
   *)
-      dmenu -fn "CozetteVector:pixelsize=14" -nb "#222222" -nf "#dedede" \
-        -sb "#e4f614" -sf "#222222" "$@"
+      dmenu -fn "agave Nerd Font:pixelsize=14" -nb "#2b3339" -nf "#d3c6aa" \
+        -sb "#d3c6aa" -sf "#282a36" "$@"
     ;;
 esac
 

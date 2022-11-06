@@ -20,7 +20,7 @@ case "$(uname)" in
 	*)
 		dmenu_c \
 			-l 10 \
-			-fn 'CozetteVector:pixelsize=14,Symbola:pixelsize=14'
+			-fn 'agave Nerd Font:pixelsize=14,Symbola:pixelsize=14'
 		;;
 esac < "$HOME"/res/emoji \
 	| awk '{ print $1 }' \

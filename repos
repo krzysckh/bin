@@ -100,6 +100,7 @@ jq -r '.[] | [.language] | @csv' /tmp/_repos_full.json \
 	| tr ',' '\n' \
 	| tr -d '"' \
 	| tr -d " " \
+	| tr '[:upper:]' '[:lower:]' \
 	| grep -v "^$" \
 	| sort \
 	| uniq -c \

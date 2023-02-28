@@ -1,0 +1,5 @@
+#!/bin/sh
+
+JAVA_HOME=/usr/lib/jvm/java-19-openjdk
+
+"$JAVA_HOME/bin/java" --module-path /usr/lib/jvm/java-19-openjdk/lib/javafx.base.jar:/usr/lib/jvm/java-19-openjdk/lib/javafx.controls.jar:/usr/lib/jvm/java-19-openjdk/lib/javafx.graphics.jar:/usr/lib/jvm/java-19-openjdk/lib/javafx.fxml.jar --add-modules javafx.controls,javafx.fxml -jar $HOME/.local/share/chunky.jar "$@"

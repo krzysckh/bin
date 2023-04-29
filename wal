@@ -2,7 +2,7 @@
 
 # script to generate and set wallpaper for my rice and colorscheme B)
 # 
-# krzysckh 2021
+# krzysckh 2021, 2023
 # krzysckh.org
 
 usage() {
@@ -26,10 +26,10 @@ img_y=$(convert $1 -format "%[h]" info:)
 [ "$2" = "right" ] && \
 	place_opts="-geometry +$((($screen_x-$img_x)-($screen_x/10)))+$((($screen_y-$img_y)/2))"
 
-gwall "#222" "#111" 5
+gwall "#2b3339" "#445055" 5
 
 convert -size "$screen_x"x"$screen_y" tile:/tmp/wall.png /tmp/w.png
-convert "$1" -monochrome +level-colors "#222","#dedede","#dedede" /tmp/k.png
-composite $place_opts /tmp/k.png -bordercolor "#dedede" -border 1x1 /tmp/w.png /tmp/new-wal.png
+convert "$1" -monochrome +level-colors "#2b3339","#d3c6aa","#d3c6aa" /tmp/k.png
+composite $place_opts /tmp/k.png -bordercolor "#d3c6aa" -border 1x1 /tmp/w.png /tmp/new-wal.png
 
 xwallpaper --center /tmp/new-wal.png

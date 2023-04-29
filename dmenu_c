@@ -3,13 +3,13 @@
 # runs dmenu with colors and font set
 # on my OpenBSD laptop dmenu is started mainly via dwm, but...
 #
-# krzysckh 2021, 2022
+# krzysckh 2021, 2022, 2023
 # krzysckh.org
 
 case `uname` in
   OpenBSD)
       dmenu -fn 'agave Nerd Font:size=8' -nb '#282a36' -nf '#f8f8f2' \
-        -sb '#f8f8f2' -sf '#282a36'
+        -sb '#f8f8f2' -sf '#282a36' "$@"
     ;;
   *)
       dmenu -fn "agave Nerd Font:pixelsize=14" -nb "#2b3339" -nf "#d3c6aa" \

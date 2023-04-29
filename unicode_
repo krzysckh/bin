@@ -1,0 +1,43 @@
+#!/usr/bin/perl
+#
+# krzysckh 2023
+# krzysckh.org
+
+use strict;
+no warnings;
+use charnames ();
+use utf8;
+
+# folder for data
+my $dir = "$ENV{'HOME'}/Documents";
+my $fname = "unicode_data";
+
+my $url = "https://www.unicode.org/Public/UCD/latest/ucd/UnicodeData.txt";
+
+$dir = "$ENV{'HOME'}/documents" if not -d $dir;
+
+if (defined $ARGV[0] and $ARGV[0] eq "mkdata") {
+  my $r = `curl $url 2>/dev/null`;
+  my @data = split "\n", $r;
+  my @s;
+  open my $f, ">", "$dir/$fname";
+  binmode($f, ":utf8");
+
+  for (@data) {
+    push @s, @{[split ";", $_]}[1];
+  }
+
+  for (@s) {
+    my ($lower, $upper) = (lc $_, $_);
+    print $f charnames::string_vianame($upper) . " " x 10
+     . "$lower\n" unless $lower 
+      =~ /control/;
+  }
+
+  close $f;
+} else {
+  my $c = `dmenu_c -l 10 < $dir/$fname`;
+  $c =~ s/\s.*//;
+  system(qq(echo "$c" | tr -d '\n' | xclip -sel c));
+}
+

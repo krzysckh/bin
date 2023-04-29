@@ -9,7 +9,7 @@ sxiv=sxiv
 
 bgcolor="#ffffff"
 fgcolor="#000000"
-text="ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz\n1234567890\nżźćńłśąóę\n-> => () []"
+text="ABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz\n1234567890\nż ź ć ń ł ś ą ó ę\n-> => () []"
 
 while [ "$#" -gt 0 ]
 do
@@ -30,6 +30,9 @@ do
       echo "$0 -b color -f color -s color font.ttf"
       exit 1
       ;;
+    -n)
+      sxiv="cat"
+      ;;
     *)
       fname="$1"
       ;;
@@ -45,7 +48,7 @@ convert -size 532x365 xc:"$bgcolor" \
   -fill "$fgcolor" \
   -annotate +0+0 "$text" \
   -flatten \
-  /tmp/_fp.png
+  /tmp/_fp.png >/dev/null
 
 $sxiv /tmp/_fp.png
 rm /tmp/_fp.png

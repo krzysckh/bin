@@ -1,0 +1,15 @@
+#!/bin/sh
+#
+# this sucks
+# https://github.com/krzysckh/openbsd-dots/blob/master/vim/.vimrc
+#
+# krzysckh 2023
+# krzysckh.org
+
+v=""
+while read -r s; do
+  v="$v$s"
+done
+ol -e "$v"
+
+echo

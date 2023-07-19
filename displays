@@ -21,13 +21,13 @@ _wallpaper() {
 
 case `printf 'single\ndual\ncustom' | dmenu_c` in
   single)
-    xrandr --output eDP-1 --primary --mode 1366x768 --pos 0x0 --rotate normal \
+    xrandr --output eDP1 --primary --mode 1366x768 --pos 0x0 --rotate normal \
       --output DP-1 --off --output HDMI-1 --off --output DP-2 --off --output \
       HDMI-2 --off
     _wallpaper
     ;;
   dual)
-    xrandr --output eDP-1 --primary --mode 1366x768 --pos 0x661 \
+    xrandr --output eDP1 --primary --mode 1366x768 --pos 0x661 \
       --rotate normal --output DP-1 --off --output HDMI-1 --off --output DP-2 \
       --off --output HDMI-2 --mode 1280x1024 --pos 1366x0 --rotate normal
     _wallpaper

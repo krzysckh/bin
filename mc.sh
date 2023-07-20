@@ -11,7 +11,9 @@
 #
 # for older versions it may require some tweaking because of lwjgl
 
-v="1.18"
+#set -xe
+
+v=$1
 jarfiles="$HOME/.minecraft/versions/$v/$v.jar"
 
 for i in `find $HOME/.minecraft -type f -name '*.jar' | grep -v versions \
@@ -23,9 +25,15 @@ for i in `find /usr/local/share/lwjgl3 -type f -name '*.jar'`; do
   jarfiles="$jarfiles:`echo $i | tr -d '\n'`"
 done
 
+portablemc start --dry $1
+
 #portablemc login -m
+uname=`jq '.microsoft.sessions | flatten | .[0] | .username' \
+  $HOME/.minecraft/portablemc_auth.json | tr -d '"'`
 auth_token=`jq '.microsoft.sessions | flatten | .[0] | .access_token' \
   $HOME/.minecraft/portablemc_auth.json | tr -d '"'`
+
+#echo $jarfiles | tr : '\n'
 
 java \
   -Xmx2G \
@@ -38,5 +46,6 @@ java \
   -cp /usr/local/share/lwjgl3/lwjgl.jar:$jarfiles \
   net.minecraft.client.main.Main \
   --accessToken=$auth_token \
+  --username=$uname \
   --version=$v
 

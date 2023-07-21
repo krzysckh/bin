@@ -32,6 +32,8 @@ uname=`jq '.microsoft.sessions | flatten | .[0] | .username' \
   $HOME/.minecraft/portablemc_auth.json | tr -d '"'`
 auth_token=`jq '.microsoft.sessions | flatten | .[0] | .access_token' \
   $HOME/.minecraft/portablemc_auth.json | tr -d '"'`
+uuid=`jq '.microsoft.sessions | flatten | .[0] | .uuid' \
+  $HOME/.minecraft/portablemc_auth.json | tr -d '"'`
 
 #echo $jarfiles | tr : '\n'
 
@@ -47,5 +49,10 @@ java \
   net.minecraft.client.main.Main \
   --accessToken=$auth_token \
   --username=$uname \
-  --version=$v
-
+  --version=$v \
+  --uuid=$uuid \
+  --gameDir $HOME/.minecraft \
+  --assetsDir $HOME/.minecraft/assets \
+  --assetIndex $v \
+  --userType microsoft \
+  --tweakClass optifine.OptiFineTweaker

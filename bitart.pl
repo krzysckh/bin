@@ -33,8 +33,7 @@ help if $opts{h} or not $fv or not $fv =~ /^f\(x,y\) = .*$/ or not
 $fv =~ s/^f\(x,y\) = //;
 $fv =~ s/(x|y)/(0 + \$$1)/g;
 
-print "P3\n$max_x $max_y\n255\n";
-
+print "P6\n$max_x $max_y\n255\n";
 
 for (0..$max_y - 1) {
   my $y = $_;
@@ -42,9 +41,9 @@ for (0..$max_y - 1) {
     my $x = $_;
     my $v = eval $fv;
 
-    print(($@?0:$v)?"255 ":"0 ") for 1..3;
+    push @vals, ($@?0:$v)?255:0;
   }
 }
 
-
-
+printf "%c%c%c", $_, $_, $_ for @vals;
+# for some reason this is faster than just printf-ing in the loops

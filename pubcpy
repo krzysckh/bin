@@ -1,0 +1,23 @@
+#!/bin/sh
+# sends file to pub.krzysckh.org
+#
+# krzysckh 2023
+# krzysckh.org
+
+f="$1"
+
+[ -z "$f" ] && die "debil."
+
+echo "napewno? $f"
+printf '[y/n] '
+read -r yn
+
+if [ "$yn" = 'y' ]; then
+	sshpass \
+    -P 'Enter passphrase for key' \
+    -p $(cat $HOME/txt/pas_krzorg) \
+    scp -i $HOME/.ssh/krzysckh.org "$f" scp://root@krzysckh.org//var/www/pub/
+fi
+
+echo "https://pub.krzysckh.org/$f"
+

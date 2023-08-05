@@ -1,9 +1,11 @@
 #!/bin/sh
 # sends file to img.krzysckh.org
 # lol
-# 
-# krzysckh 2022
+#
+# krzysckh 2022, 2023
 # krzysckh.org
+
+. ~/.kshrc
 
 fname=
 date=
@@ -35,14 +37,15 @@ done
 
 echo "napewno? $fname ($date = `perl -e "print scalar localtime $date"`)"
 printf '[y/n] '
-read yn
+read -r yn
 
 if [ "$yn" = 'y' ]; then
   convert "$fname" -quality 100 /tmp/"$date.jpg" || die "problem magick"
+  cleanmeta /tmp/"$date.jpg" || die "cannot cleanmeta"
 	sshpass \
     -P 'Enter passphrase for key' \
-    -p $(cat $HOME/txt/pas_krzorg) \
-    scp -i $HOME/.ssh/krzysckh.org /tmp/"$date.jpg" \
+    -p `cat ~/txt/pas_krzorg` \
+    scp -i ~/.ssh/krzysckh.org /tmp/"$date.jpg" \
     scp://root@krzysckh.org//var/www/pub/img/"$date.jpg"
 fi
 

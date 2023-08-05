@@ -25,9 +25,10 @@ die "$fname is not a file" if not -f $fname;
 
 $fname = basename($fname);
 
-die "basename not in right format" if not $fname=~m/IMG_[0-9]{8}_[0-9]{9}\..*/;
+die "basename not in right format" if not
+  $fname =~ /IMG_[0-9]{8}_[0-9]{9}(_MFNR)?\..*/;
 
-$fname =~ s/...\..*//;
+$fname =~ s/...(_MFNR)?\..*//;
 $fname =~ s/IMG//;
 $fname =~ s/_//;
 

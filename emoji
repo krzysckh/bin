@@ -10,7 +10,7 @@
 case "$(uname)" in
 	*OpenBSD*)
 		dmenu \
-			-fn 'agave Nerd Font:size=8' \
+			-fn 'Lilex:size=7' \
 			-nb '#282a36' \
 			-nf '#f8f8f2' \
 			-sb '#f8f8f2' \

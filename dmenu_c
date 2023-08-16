@@ -8,7 +8,7 @@
 
 case `uname` in
   OpenBSD)
-      dmenu -fn 'agave Nerd Font:size=8' -nb '#282a36' -nf '#f8f8f2' \
+      dmenu -fn 'Lilex:size=7' -nb '#282a36' -nf '#f8f8f2' \
         -sb '#f8f8f2' -sf '#282a36' "$@"
     ;;
   *)

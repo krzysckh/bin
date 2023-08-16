@@ -9,6 +9,8 @@ usage() {
 }
 
 [ -z "$1" ] && usage
+link=$1
+shift
 
-yt-dlp -f bestvideo+bestaudio/best "$1" -o - | mpv -
+yt-dlp -f bestvideo+bestaudio/best "$link" -o - | mpv "$@" -
 

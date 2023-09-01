@@ -1,8 +1,8 @@
 #!/bin/sh
 # skrypt pokazujący najnowszy plan lekcji
 # z plan.tk.krakow.pl
-klasa="16"
-# o16.html -> miejsce z planem 2pb
+klasa="24"
+# o24.html -> miejsce z planem 3pb
 
 # wymaga:
 #  (testowane na gnu) coreutils

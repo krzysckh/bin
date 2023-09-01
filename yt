@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# run mpv on youtuibe lin /w highest quality
+# run mpv on youtube link /w highest quality
 # i use it as a link handler for ytfzf
 
 usage() {
@@ -9,8 +9,13 @@ usage() {
 }
 
 [ -z "$1" ] && usage
-link=$1
+L=$1
 shift
 
-yt-dlp -f bestvideo+bestaudio/best "$link" -o - | mpv "$@" -
+case $L in
+  http*) ;;
+  *) L="ytsearch1:$L" ;;
+esac
+
+yt-dlp -f bestvideo+bestaudio/best "$L" -o - | mpv "$@" -
 

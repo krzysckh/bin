@@ -3,26 +3,11 @@
 # dmenu emoji selecting script
 # needs emoji list in $HOME/res/
 # you can get it from https://github.com/krzysckh/darkrice
-# 
-# krzysckh 2021
+#
+# krzysckh 2021, 2023
 # krzysckh.org
 
-case "$(uname)" in
-	*OpenBSD*)
-		dmenu \
-			-fn 'Lilex:size=7' \
-			-nb '#282a36' \
-			-nf '#f8f8f2' \
-			-sb '#f8f8f2' \
-			-sf '#282a36' \
-			-l 10
-		;;
-	*)
-		dmenu_c \
-			-l 10 \
-			-fn 'agave Nerd Font:pixelsize=14,Symbola:pixelsize=14'
-		;;
-esac < "$HOME"/res/emoji \
+dmenu_c -l 10 < "$HOME"/res/emoji \
 	| awk '{ print $1 }' \
 	| tr -d '\n' \
 	| xclip -selection clipboard

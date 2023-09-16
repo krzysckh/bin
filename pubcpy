@@ -4,9 +4,10 @@
 # krzysckh 2023
 # krzysckh.org
 
-f="$1"
+set -e
 
-[ -z "$f" ] && die "debil."
+f="$1"
+[ ! -z $f ]
 
 echo "napewno? $f"
 printf '[y/n] '

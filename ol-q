@@ -8,7 +8,7 @@
 
 v=""
 while read -r s; do
-  v="$v$s"
+  v="$v $s"
 done
 ol -e "$v"
 

@@ -23,7 +23,7 @@ bat() {
 bat_time() {
 	apm -m | tr -d '\n'
 	echo " min " | tr -d '\n'
-	echo "(" "$(echo 'scale=4;' $(apm -m) '/60' | bc)" "h" ")" | tr -d '\n'
+  echo "($(echo 'scale=4;' $(apm -m) '/60' | bc)" "h)" | tr -d '\n'
 }
 
 case "$1" in

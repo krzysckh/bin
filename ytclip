@@ -1,4 +1,10 @@
 #!/usr/bin/perl
+#
+# script for my dwm build. launches a youtube video from a link in the clipboard
+# via the `yt` script.
+#
+# krzysckh 2023
+# krzysckh.org
 
 use strict;
 use warnings;
@@ -7,9 +13,13 @@ sub Try {
   ($_) = @_;
 
   if (m!^https?://.*/watch\?v=[a-zA-Z0-9]+$!) {
-    `yt $_` if fork;
-    `notify-send "ytclip" "ok"`;
-    exit 0;
+    if (fork) {
+      `yt $_`;
+      exit 0
+    } else {
+      `notify-send "ytclip" "ok"`;
+      exit 0
+    }
   }
 }
 

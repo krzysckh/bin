@@ -1,0 +1,19 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+sub Try {
+  ($_) = @_;
+
+  if (m!^https?://.*/watch\?v=[a-zA-Z0-9]+$!) {
+    `yt $_` if fork;
+    `notify-send "ytclip" "ok"`;
+    exit 0;
+  }
+}
+
+Try `xclip -sel c -o`;
+Try `xclip -sel p -o`;
+
+`notify-send "ytclip" "fatal"`

@@ -12,7 +12,7 @@ use warnings;
 sub Try {
   ($_) = @_;
 
-  if (m!^https?://.*/watch\?v=[a-zA-Z0-9]+$!) {
+  if (m!^https?://.*/watch\?v=[a-zA-Z0-9\_\-\+\=]+$!) {
     if (fork) {
       `yt $_`;
       exit 0

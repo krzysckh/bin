@@ -17,7 +17,7 @@ if [ "$yn" = 'y' ]; then
 	sshpass \
     -P 'Enter passphrase for key' \
     -p $(cat $HOME/txt/pas_krzorg) \
-    scp -i $HOME/.ssh/krzysckh.org "$f" scp://root@krzysckh.org//var/www/pub/
+    scp -i $HOME/.ssh/krzysckh.org "$f" scp://root@pub.krzysckh.org//var/www/pub/
 fi
 
 echo "https://pub.krzysckh.org/$f"

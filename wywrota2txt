@@ -1,0 +1,21 @@
+#!/bin/sh
+# spiewnik.wywrota.pl → txt
+#
+# krzysckh 2023
+# krzysckh.org
+
+url=$1
+[ -z $url ] && exit 1
+
+html=`curl "$url" 2>/dev/null`
+title=`echo $html \
+  | htmlq --text '.grid-content > h1 > strong' \
+  | sed -E 's/^\s+// ; s/\s+$//'`
+author=`echo $html \
+  | htmlq --text '.grid-content > h1' \
+  | sed "s/\\s*$title\\s*//"`
+
+printf "%s - %s\n\n" "$author" "$title"
+curl "$url" 2>/dev/null \
+  | htmlq --text .interpretation-content \
+  | grep -vE '^\s*$'

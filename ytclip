@@ -1,7 +1,5 @@
 #!/usr/bin/perl
-#
 # script for my dwm build. launches a youtube video from a link in the clipboard
-# via the `yt` script.
 #
 # krzysckh 2023
 # krzysckh.org
@@ -14,7 +12,7 @@ sub Try {
 
   if (m!^https?://.*/watch\?v=[a-zA-Z0-9\_\-\+\=]+$!) {
     if (fork) {
-      `yt $_`;
+      `mpv $_`;
       exit 0
     } else {
       `notify-send "ytclip" "ok"`;
@@ -23,7 +21,7 @@ sub Try {
   }
 }
 
-Try `xclip -sel c -o`;
 Try `xclip -sel p -o`;
+Try `xclip -sel c -o`;
 
 `notify-send "ytclip" "fatal"`

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-/opt/discord/Discord \
+/usr/share/discord/Discord \
 	--ignore-gpu-blocklist \
 	--disable-features=UseOzonePlatform \
 	--enable-features=VaapiVideoDecoder \

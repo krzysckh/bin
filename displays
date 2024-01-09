@@ -15,7 +15,7 @@ die() {
 _wallpaper() {
   mon=`xrandr --listactivemonitors | awk 'NR > 1 { print $(NF) }'`
   for i in $mon; do
-    xwallpaper --output "$i" --zoom $HOME/documents/img/wal.jpg
+    xwallpaper --output "$i" --zoom /usr/local/share/openbsd-backgrounds/landscape/djm/20150405_trentham_trees.jpg
   done
 }
 

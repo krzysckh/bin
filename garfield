@@ -1,0 +1,36 @@
+#!/usr/bin/perl
+# get the todays garfield comic B)
+#
+# krzysckh 2024
+# krzysckh.org
+
+use strict;
+use warnings;
+
+use HTML::Parser;
+use HTTP::Tiny;
+use File::Slurp qw(write_file);
+use POSIX qw(strftime);
+
+my $h = HTTP::Tiny->new();
+
+sub taghandler {
+  my ($tagname, $attr) = @_;
+
+  if ($tagname eq "img") {
+    if ($attr->{alt} =~ /garfield comic strip for/ig) {
+      my $comic = $h->get($attr->{src})->{content};
+      write_file "/tmp/garfield.gif", $comic;
+      system "convert /tmp/garfield.gif PNG:- | xclip -sel c -t image/png";
+      system "sxiv /tmp/garfield.gif";
+
+      exit 0;
+    }
+  }
+}
+
+my $today = strftime("%Y/%m/%d", localtime);
+my $url = "https://www.gocomics.com/garfield/$today";
+my $p = HTML::Parser->new(start_h => [\&taghandler, "tagname, attr"]);
+
+$p->parse($h->get($url)->{content})

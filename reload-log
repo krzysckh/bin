@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -ex
+
+sshpass \
+  -P 'Enter passphrase for key' \
+  -p $(cat $HOME/txt/pas_krzorg) \
+  ssh -t -i $HOME/.ssh/krzysckh.org root@log.krzysckh.org \
+  "cd /var/www/log ; tar xvzf /var/www/pub/log.tgz ; mv .log/* . ; rm -r .log /var/www/pub/log.tgz"

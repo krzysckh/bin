@@ -3,7 +3,7 @@
 # runs dmenu with colors and font set
 # on my OpenBSD laptop dmenu is started mainly via dwm, but...
 #
-# krzysckh 2021, 2022, 2023
+# krzysckh 2021, 2022, 2023, 2024
 # krzysckh.org
 
 case `uname` in
@@ -12,7 +12,7 @@ case `uname` in
         -sb '#101010' -sf '#eeeeee' "$@"
     ;;
   *)
-      dmenu -fn "agave Nerd Font:pixelsize=14" -nb "#2b3339" -nf "#d3c6aa" \
+      dmenu -fn "Lilex:pixelsize=14" -nb "#2b3339" -nf "#d3c6aa" \
         -sb "#d3c6aa" -sf "#282a36" "$@"
     ;;
 esac

@@ -1,9 +1,15 @@
 #!/bin/sh
-# 
+#
 # records your screen using ffmpeg
+#
+# krzysckh 2022, 2024
+# krzysckh.org
+
+set -e
 
 usage() {
-	echo "$0 out.mp4"
+	echo "     $0 out.mp4"
+	echo "     $0 out.mp4 a     # with audio"
 	exit 1
 }
 
@@ -12,18 +18,21 @@ _xerr() {
 	exit 1
 }
 
+a=""
+
 [ -z "$1" ] && usage
 [ -z "$DISPLAY" ] && _xerr
+[ -z "$2" ] || a="-f pulse -i `pactl list short sources | head -n1 | awk '{print $2}'`"
 
 ffmpeg \
 	-f x11grab \
 	-y \
 	-framerate 30 \
-	-s "$(xrandr | grep '*' | awk '{print $1}')" \
+	-video_size "$(xrandr | grep '*' | awk '{print $1}')" \
 	-i "$DISPLAY" \
+	$a \
 	-pix_fmt yuv420p \
 	-c:v libx264 \
 	-preset superfast \
 	-crf 18 \
 	"$1"
-

@@ -1,0 +1,7 @@
+#!/bin/sh
+# requires 9fronts' festoon
+#
+# krzysckh 2024
+# krzysckh.org
+
+festoon -pte 1000 75 | pic | eqn | tbl | groff -mm | ps2pdf -

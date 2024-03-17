@@ -1,0 +1,10 @@
+#!/bin/sh
+# lock the screen
+#
+# krzysckh 2024
+# krzysckh.org
+
+case `uname` in
+  OpenBSD) xlock -mode random ;;
+  *)       xscreensaver-command -lock ;;
+esac

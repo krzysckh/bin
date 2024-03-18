@@ -6,18 +6,21 @@ else
 	bakf="$HOME/documents/srv_bak"
 fi
 
-sshpass \
-	-P 'Enter passphrase for key' \
-	-p "$(cat $HOME/txt/pas_krzorg)" \
-	ssh -i "$HOME/.ssh/krzysckh.org" \
-	root@bije.zone \
-	"sh crbak.sh"
+for serv in "krzysckh.org" "pub.krzysckh.org"
+do
+	sshpass \
+		-P 'Enter passphrase for key' \
+		-p "$(cat $HOME/txt/pas_krzorg)" \
+		ssh -i "$HOME/.ssh/krzysckh.org" \
+		"root@$serv" \
+		"sh crbak.sh"
 
-fname="`date +%s`_bak.tgz"
+	fname="`date +%s`_bak-$serv.tgz"
 
-sshpass \
-	-P 'Enter passphrase for key' \
-	-p $(cat $HOME/txt/pas_krzorg) \
-	scp -i "$HOME/.ssh/krzysckh.org" \
-	scp://root@krzysckh.org//root/bak.tgz \
-	"$bakf/$fname"
+	sshpass \
+		-P 'Enter passphrase for key' \
+		-p $(cat $HOME/txt/pas_krzorg) \
+		scp -i "$HOME/.ssh/krzysckh.org" \
+		scp://root@$serv//root/bak.tgz \
+		"$bakf/$fname"
+done

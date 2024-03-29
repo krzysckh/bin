@@ -24,9 +24,12 @@ sub Try {
 
 # https://unix.stackexchange.com/questions/629440/how-to-get-the-url-from-current-tab-of-firefox-without-need-to-install-addition
 sub Fromff {
+  my $was = `xclip -o -selection clipboard`;
   my $wid=`xdotool search --onlyvisible --class "firefox"`;
   `xdotool key --window "$wid" --delay 20 --clearmodifiers ctrl+l ctrl+c Escape`;
-  Try `xclip -o -selection clipboard`
+  Try `xclip -o -selection clipboard`;
+  open my $x, '|xclip -sel c';
+  print $x $was;
 }
 
 Fromff;

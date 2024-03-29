@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+# -*- mode: cperl; cperl-indent-level: 2 -*-
 # script for my dwm build. launches a youtube video from a link in the clipboard
 #
 # krzysckh 2023
@@ -21,6 +22,14 @@ sub Try {
   }
 }
 
+# https://unix.stackexchange.com/questions/629440/how-to-get-the-url-from-current-tab-of-firefox-without-need-to-install-addition
+sub Fromff {
+  my $wid=`xdotool search --onlyvisible --class "firefox"`;
+  `xdotool key --window "$wid" --delay 20 --clearmodifiers ctrl+l ctrl+c Escape`;
+  Try `xclip -o -selection clipboard`
+}
+
+Fromff;
 Try `xclip -sel p -o`;
 Try `xclip -sel c -o`;
 

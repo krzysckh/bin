@@ -9,7 +9,7 @@ set -e
 f="$1"
 [ ! -z $f ]
 
-echo "napewno? $f"
+echo "na pewno? $f"
 printf '[y/n] '
 read -r yn
 

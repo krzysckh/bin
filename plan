@@ -23,7 +23,7 @@ curl --user "$usr":"$pass" https://plan.tk.krakow.pl 2>/dev/null \
 	| tail -n 1 \
 	| sed 's/./&\ /4' \
 	| sed 's/./&\ /7' \
-	| awk '{ printf "%d.%02d.%02d", $3, $2, $1 }' \
+	| awk '{ printf "%02d.%02d.%02d", $3, $2, $1 }' \
 	| xargs -I '{}' \
 		w3m -cols "$(tput cols)" -dump \
 		http://"$usr":"$pass"@plan.tk.krakow.pl/'{}'/plany/o"$klasa".html

@@ -1,24 +1,38 @@
 #!/bin/sh
 # sends file to pub.krzysckh.org
 #
-# krzysckh 2023
+# krzysckh 2023, 2024
 # krzysckh.org
 
-set -e
-
-f="$1"
-[ ! -z $f ]
+if [ ! -z $2 ]; then
+  d=`basename $1`
+  f="$2"
+elif [ ! -z $1 ]; then
+  d=""
+  f=`basename $1`
+else
+  exit 1
+fi
 
 echo "na pewno? $f"
 printf '[y/n] '
 read -r yn
 
+set -e
+
 if [ "$yn" = 'y' ]; then
+  if [ ! $d = "" ]; then
+	  sshpass \
+      -P 'Enter passphrase for key' \
+      -p $(cat $HOME/txt/pas_krzorg) \
+      ssh -i $HOME/.ssh/krzysckh.org root@pub.krzysckh.org "mkdir -p /var/www/pub/$d"
+    print "ok mkdir $d"
+  fi
 	sshpass \
     -P 'Enter passphrase for key' \
     -p $(cat $HOME/txt/pas_krzorg) \
-    scp -i $HOME/.ssh/krzysckh.org "$f" scp://root@pub.krzysckh.org//var/www/pub/
+    scp -i $HOME/.ssh/krzysckh.org "$f" "scp://root@pub.krzysckh.org//var/www/pub/$d/$f"
 fi
 
-echo "https://pub.krzysckh.org/$f"
+echo "https://pub.krzysckh.org/$d/$f"
 

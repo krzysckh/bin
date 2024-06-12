@@ -26,7 +26,7 @@ if [ "$yn" = 'y' ]; then
       -P 'Enter passphrase for key' \
       -p $(cat $HOME/txt/pas_krzorg) \
       ssh -i $HOME/.ssh/krzysckh.org root@pub.krzysckh.org "mkdir -p /var/www/pub/$d"
-    print "ok mkdir $d"
+    echo "ok mkdir $d"
   fi
 	sshpass \
     -P 'Enter passphrase for key' \

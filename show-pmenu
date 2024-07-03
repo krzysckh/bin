@@ -1,0 +1,24 @@
+#!/bin/sh
+# -*- mode: sh; sh-basic-offset: 2 -*-
+# show pmenu reading userdata from $UDATA
+#
+# krzysckh 2024
+# krzysckh.org
+
+if [ -z $1 ]; then
+  UDATA=~/.pmenu-udata
+else
+  UDATA=$1
+fi
+
+export ICONPATH="/usr/share/icons/retrosmart-icon-theme/scalable/"
+
+cat <<EOF | pmenu | sh
+IMG:haikuos-app_firefox.svg	firefox
+IMG:file-manager.svg	pcmanfm
+IMG:emacs23.svg	darkmacs
+IMG:haikuos-app_mail.svg	urxvtc -e aerc
+IMG:image-x-adobe-dng.svg	shotwell
+IMG:folder-activities.svg
+$(sed 's/^/	/' $UDATA)
+EOF

@@ -21,7 +21,7 @@ $mday = sprintf("%02d", $mday);
 $year += 1900;
 
 my $c = HTTP::Tiny->new;
-my $res = $c->get("http://meteo.icm.edu.pl/um/metco/mgram_pict.php"
+my $res = $c->get("http://old.meteo.pl/um/metco/mgram_pict.php"
   . "?ntype=0u&fdate=$year$mon$mday" . "06&row=$x&col=$y&lang=pl");
 
 print $res->{content};

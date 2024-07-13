@@ -8,8 +8,8 @@
 
 case `uname` in
   OpenBSD)
-      dmenu -fn 'Lilex:size=7' -nb '#eeeeee' -nf '#101010' \
-        -sb '#101010' -sf '#eeeeee' "$@"
+      dmenu -fn "Lilex:size=7" -nb "#2b3339" -nf "#d3c6aa" \
+        -sb "#d3c6aa" -sf "#282a36" "$@"
     ;;
   *)
       dmenu -fn "Lilex:pixelsize=14" -nb "#2b3339" -nf "#d3c6aa" \

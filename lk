@@ -1,0 +1,13 @@
+#!/bin/sh
+# client for l.krzysckh.org
+#
+# krzysckh 2024
+# krzysckh.org
+
+l=$1
+id=$2
+
+[ -z "$id" ] || echo "$l $id" | nc l.krzysckh.org 9420
+[ -z "$id" ] && id=`echo "$l" | nc l.krzysckh.org 9420`
+
+echo https://l.krzysckh.org/?$id

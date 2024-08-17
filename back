@@ -1,0 +1,3 @@
+#!/bin/sh
+
+set-status "We are so back."

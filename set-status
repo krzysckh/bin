@@ -1,0 +1,5 @@
+#!/bin/sh
+
+[ -z "$1" ] && exit 1
+
+curl --get --data-urlencode "auth=$(cat ~/txt/status-auth | tr -d '\n')" --data-urlencode "v=$1" $(cat ~/txt/status-url | tr -d '\n')

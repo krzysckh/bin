@@ -1,8 +1,8 @@
 #!/bin/sh
 # skrypt pokazujący najnowszy plan lekcji
 # z plan.tk.krakow.pl
-klasa="24"
-# o24.html -> miejsce z planem 3pb
+klasa="41"
+# o41.html -> miejsce z planem 3pb
 
 # wymaga:
 #  (testowane na gnu) coreutils
@@ -21,8 +21,7 @@ curl --user "$usr":"$pass" https://plan.tk.krakow.pl 2>/dev/null \
 	| awk '{ printf "%02d%02d%02d\n", $3, $2, $1 }' \
 	| sort -n \
 	| tail -n 1 \
-	| sed 's/./&\ /4' \
-	| sed 's/./&\ /7' \
+	| sed 's/./&\ /4 ; s/./&\ /7' \
 	| awk '{ printf "%02d.%02d.%02d", $3, $2, $1 }' \
 	| xargs -I '{}' \
 		w3m -cols "$(tput cols)" -dump \

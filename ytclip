@@ -1,24 +1,47 @@
 #!/usr/bin/perl
 # -*- mode: cperl; cperl-indent-level: 2 -*-
 # script for my dwm build. launches a youtube video from a link in the clipboard
+# ask emacs to do handle a link if it's running
 #
-# krzysckh 2023
+# krzysckh 2023, 2024
 # krzysckh.org
 
 use strict;
 use warnings;
+use IO::Socket::UNIX;
+use Proc::Find qw(proc_exists);
+
+sub ask_mpv {
+  ($_) = @_;
+
+  if (fork) {
+    `mpv $_`
+  } else {
+    exit 0
+  }
+}
+
+sub ask_emacs {
+  ($_) = @_;
+
+  my $emacs = IO::Socket::UNIX->new(Type => SOCK_STREAM(), Peer => glob "~/.emacs-evaluator");
+  print $emacs qq{(yt "$_")};
+  close $emacs;
+}
 
 sub Try {
   ($_) = @_;
 
   if (m!^https?://.*/watch\?v=[a-zA-Z0-9\_\-\+\=]+$!) {
-    if (fork) {
-      `mpv $_`;
-      exit 0
+    if (proc_exists(name => 'emacs')) {
+      ask_emacs $_;
+      `notify-send "ytclip" "ok (using emacs)"`
     } else {
-      `notify-send "ytclip" "ok"`;
-      exit 0
+      ask_mpv $_;
+      `notify-send "ytclip" "ok (using mpv)"`
     }
+
+    exit 0
   }
 }
 

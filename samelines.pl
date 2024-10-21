@@ -2,20 +2,11 @@
 
 use strict;
 use warnings;
+use List::Util qw(max);
 
 my @l;
-my $i = 0;
-my $maxlen = 0;
 
-while (<>) {
-  s/\n//g;
-  $l[$i] = $_;
-  $i++;
-}
-
-foreach (@l) {
-  $maxlen = length if length > $maxlen;
-}
-
-print $_, " " x ($maxlen - length), "\n" foreach (@l);
-
+push @l, $_ while <>;
+chomp for @l;
+my $maxl = max map length, @l;
+print $_, " " x ($maxl - length), "\n" for @l;

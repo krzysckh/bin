@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -e
+
+if mount | grep /ramfs; then
+  echo "already mounted"
+  exit 1
+fi
+
+if [ ! -d /ramfs ]; then
+  sudo mkdir /ramfs
+  sudo chown /ramfs $USER
+fi
+
+sudo mount ramfs -t ramfs -o uid=kpm -o mode=777 /ramfs

@@ -25,13 +25,13 @@ if [ "$yn" = 'y' ]; then
 	  sshpass \
       -P 'Enter passphrase for key' \
       -p $(cat $HOME/txt/pas_krzorg) \
-      ssh -i $HOME/.ssh/krzysckh.org root@pub.krzysckh.org "mkdir -p /var/www/pub/$d"
+      ssh -i $HOME/.ssh/krzysckh.org root@fuji "mkdir -p /var/www/pub/$d"
     echo "ok mkdir $d"
   fi
 	sshpass \
     -P 'Enter passphrase for key' \
     -p $(cat $HOME/txt/pas_krzorg) \
-    scp -i $HOME/.ssh/krzysckh.org "$f" "scp://root@pub.krzysckh.org//var/www/pub/$d/$f"
+    scp -i $HOME/.ssh/krzysckh.org "$f" "scp://root@fuji//var/www/pub/$d/$f"
 fi
 
 echo "https://pub.krzysckh.org/$d/$f"

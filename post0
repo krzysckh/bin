@@ -4,7 +4,7 @@
 
 post0() {
 	[ -z "$1" ] && echo "usage: post0 file" || \
-		curl -F'file=@'"$1" http://0x0.st
+		curl -A 'hello can i please post a file to 0x0 thanks' -F'file=@'"$1" http://0x0.st
 }
 
 post0 "$@"

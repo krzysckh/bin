@@ -1,7 +1,7 @@
 #!/bin/sh
 # skrypt pokazujący najnowszy plan lekcji
 # z plan.tk.krakow.pl
-klasa="45"
+klasa="48"
 # o41.html -> miejsce z planem 3pb
 
 # wymaga:
